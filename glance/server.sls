@@ -85,6 +85,8 @@ glance_cron_glance-cache-pruner:
   - name: glance-cache-pruner
   - user: glance
   - special: '@daily'
+  - require:
+    - service: glance_services
 
 glance_cron_glance-cache-cleaner:
   cron.present:
@@ -93,6 +95,8 @@ glance_cron_glance-cache-cleaner:
   - minute: 30
   - hour: 5
   - daymonth: '*/2'
+  - require:
+    - service: glance_services
 
 {%- endif %}
 
