@@ -206,6 +206,7 @@ backlog = 4096
 # value)
 #key_file = <None>
 
+{% if server.get('image_cache', {}).get('enabled', False) %}
 # The path to the sqlite file database that will be used for image
 # cache management. (string value)
 #image_cache_sqlite_db = cache.db
@@ -217,15 +218,18 @@ backlog = 4096
 # beyond which the cache pruner, if running, starts cleaning the image
 # cache. (integer value)
 #image_cache_max_size = 10737418240
+image_cache_max_size = {{ server.image_cache.get('max_size', '10737418240') }}
 
 # The amount of time to let an incomplete image remain in the cache,
 # before the cache cleaner, if running, will remove the incomplete
 # image. (integer value)
 #image_cache_stall_time = 86400
+image_cache_stall_time = {{ server.image_cache.get('stall_time', '86400') }}
 
 # Base directory that the image cache uses. (string value)
 #image_cache_dir = <None>
-image_cache_dir = /var/lib/glance/image-cache/
+image_cache_dir = {{ server.image_cache.get('directory', '/var/lib/glance/image-cache/') }}
+{% endif %}
 
 # Default publisher_id for outgoing notifications. (string value)
 #default_publisher_id = image.localhost
@@ -1729,7 +1733,15 @@ rabbit_virtual_host = {{ server.message_queue.virtual_host }}
 # [pipeline:glance-api-keystone] use the value "keystone" (string
 # value)
 #flavor = <None>
+{% if server.get('image_cache', {}).get('enabled', False) %}
+{%   if server.image_cache.get('enable_management', False) %}
+flavor=keystone+cachemanagement
+{%   else %}
+flavor=keystone+caching
+{%   endif %}
+{% else %}
 flavor=keystone
+{% endif %}
 
 # Name of the paste configuration file. (string value)
 #config_file = <None>
