@@ -125,6 +125,26 @@ Enable auditing filter (CADF):
           map_file: '/etc/pycadf/glance_api_audit_map.conf'
       ....
 
+Swift integration glance
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        enabled: true
+        version: mitaka
+        storage:
+          engine: swift,http
+          swift_store:
+            auth_version: 2
+            auth_address: http://keystone.example.com:5000/v2.0
+            endpoint_type: publicURL
+            container: glance
+            create_container_on_put: true
+            retry_get_count: 5
+            user: 2ec7966596504f59acc3a76b3b9d9291:glance-user
+            key: someRandomPassword
+
 
 Client role
 -----------
