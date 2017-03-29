@@ -125,6 +125,19 @@ Enable auditing filter (CADF):
           map_file: '/etc/pycadf/glance_api_audit_map.conf'
       ....
 
+Enable Glance Image Cache:
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        image_cache:
+          enabled: true
+          enable_management: true
+          directory: /var/lib/glance/image-cache/
+          max_size: 21474836480
+      ....
+
 
 Client role
 -----------
