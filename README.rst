@@ -112,19 +112,6 @@ RabbitMQ HA setup
           virtual_host: '/openstack'
         ....
 
-Enable auditing filter (CADF):
-
-.. code-block:: yaml
-
-    glance:
-      server:
-        audit:
-          enabled: true
-      ....
-          filter_factory: 'keystonemiddleware.audit:filter_factory'
-          map_file: '/etc/pycadf/glance_api_audit_map.conf'
-      ....
-
 Enable Glance Image Cache:
 
 .. code-block:: yaml
@@ -136,6 +123,19 @@ Enable Glance Image Cache:
           enable_management: true
           directory: /var/lib/glance/image-cache/
           max_size: 21474836480
+      ....
+
+Enable auditing filter (CADF):
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        audit:
+          enabled: true
+      ....
+          filter_factory: 'keystonemiddleware.audit:filter_factory'
+          map_file: '/etc/pycadf/glance_api_audit_map.conf'
       ....
 
 
