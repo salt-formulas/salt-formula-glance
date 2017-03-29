@@ -961,8 +961,6 @@ swift_store_key = {{ server.storage.swift_store.key }}
 #swift_store_config_file = <None>
 {% if server.storage.swift_store.config_file is defined %}
 swift_store_config_file = {{ server.storage.swift_store.config_file }}
-{% else %}
-
 {% endif %}
 
 {%- if 'rbd' in storage_engines %}
