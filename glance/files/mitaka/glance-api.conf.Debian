@@ -963,6 +963,8 @@ swift_store_key = {{ server.storage.swift_store.key }}
 swift_store_config_file = {{ server.storage.swift_store.config_file }}
 {% endif %}
 
+{% endif %}
+
 {%- if 'rbd' in storage_engines %}
 # RADOS images will be chunked into objects of this size (in
 # megabytes). For best performance, this should be a power of two.
