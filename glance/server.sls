@@ -79,6 +79,23 @@ glance_install_database:
   - require:
     - service: glance_services
 
+{%- if server.get('image_cache', {}).get('enabled', False) %}
+glance_cron_glance-cache-pruner:
+  cron.present:
+  - name: glance-cache-pruner
+  - user: glance
+  - special: '@daily'
+
+glance_cron_glance-cache-cleaner:
+  cron.present:
+  - name: glance-cache-cleaner
+  - user: glance
+  - minute: 30
+  - hour: 5
+  - daymonth: '*/2'
+
+{%- endif %}
+
 {%- endif %}
 
 {%- if grains.get('virtual_subtype', None) == "Docker" %}
