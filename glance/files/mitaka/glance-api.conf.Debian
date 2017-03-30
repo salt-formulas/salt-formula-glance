@@ -804,42 +804,42 @@ stores = {{ server.storage.engine }}
 # If True, swiftclient won't check for a valid SSL certificate when
 # authenticating. (boolean value)
 #swift_store_auth_insecure = false
-swift_store_auth_insecure = {{ server.storage.swift_store.get('auth_insecure', False)|lower }}
+swift_store_auth_insecure = {{ server.storage.swift.store.auth.get('insecure', False)|lower }}
 
 # A string giving the CA certificate file to use in SSL connections
 # for verifying certs. (string value)
 #swift_store_cacert = <None>
-{% if server.storage.swift_store.cacert is defined %}
-swift_store_cacert = {{ server.storage.swift_store.cacert }}
+{% if server.storage.swift.store.cacert is defined %}
+swift_store_cacert = {{ server.storage.swift.store.cacert }}
 {% endif %}
 
 # The region of the swift endpoint to be used for single tenant. This
 # setting is only necessary if the tenant has multiple swift
 # endpoints. (string value)
 #swift_store_region = <None>
-{% if server.storage.swift_store.region is defined %}
-swift_store_region = {{ server.storage.swift_store.region }}
+{% if server.storage.swift.store.region is defined %}
+swift_store_region = {{ server.storage.swift.store.region }}
 {% endif %}
 
 # If set, the configured endpoint will be used. If None, the storage
 # url from the auth response will be used. (string value)
 #swift_store_endpoint = <None>
-{% if server.storage.swift_store.endpoint is defined %}
-swift_store_endpoint = {{ server.storage.swift_store.endpoint }}
+{% if server.storage.swift.store.endpoint is defined %}
+swift_store_endpoint = {{ server.storage.swift.store.endpoint }}
 {% endif %}
 
 # A string giving the endpoint type of the swift service to use
 # (publicURL, adminURL or internalURL). This setting is only used if
 # swift_store_auth_version is 2. (string value)
 #swift_store_endpoint_type = publicURL
-swift_store_endpoint_type = {{ server.storage.swift_store.get('endpoint_type', server.identity.get('endpoint_type', 'publicURL')) }}
+swift_store_endpoint_type = {{ server.storage.swift.store.get('endpoint_type', server.identity.get('endpoint_type', 'publicURL')) }}
 
 # A string giving the service type of the swift service to use. This
 # setting is only used if swift_store_auth_version is 2. (string
 # value)
 #swift_store_service_type = object-store
-{% if server.storage.swift_store.service_type is defined %}
-swift_store_service_type = {{ server.storage.swift_store.service_type }}
+{% if server.storage.swift.store.service_type is defined %}
+swift_store_service_type = {{ server.storage.swift.store.service_type }}
 {% endif %}
 
 # Container within the account that the account should use for storing
@@ -847,32 +847,32 @@ swift_store_service_type = {{ server.storage.swift_store.service_type }}
 # container mode, this will be the prefix for all containers. (string
 # value)
 #swift_store_container = glance
-swift_store_container = {{ server.storage.swift_store.get('container', 'glance') }}
+swift_store_container = {{ server.storage.swift.store.get('container', 'glance') }}
 
 # The size, in MB, that Glance will start chunking image files and do
 # a large object manifest in Swift. (integer value)
 #swift_store_large_object_size = 5120
-{% if server.storage.swift_store.large_object_size is defined %}
-swift_store_large_object_size = {{ server.storage.swift_store.large_object_size }}
+{% if server.storage.swift.store.large_object_size is defined %}
+swift_store_large_object_size = {{ server.storage.swift.store.large_object_size }}
 {% endif %}
 
 # The amount of data written to a temporary disk buffer during the
 # process of chunking the image file. (integer value)
 #swift_store_large_object_chunk_size = 200
-{% if server.storage.swift_store.large_object_chunk_size is defined %}
-swift_store_large_object_chunk_size = {{ server.storage.swift_store.large_object_chunk_size }}
+{% if server.storage.swift.store.large_object_chunk_size is defined %}
+swift_store_large_object_chunk_size = {{ server.storage.swift.store.large_object_chunk_size }}
 {% endif %}
 
 # A boolean value that determines if we create the container if it
 # does not exist. (boolean value)
 #swift_store_create_container_on_put = false
-swift_store_create_container_on_put = {{ server.storage.swift_store.get('create_container_on_put', False)|lower }}
+swift_store_create_container_on_put = {{ server.storage.swift.store.get('create_container_on_put', False)|lower }}
 
 # If set to True, enables multi-tenant storage mode which causes
 # Glance images to be stored in tenant specific Swift accounts.
 # (boolean value)
 #swift_store_multi_tenant = false
-swift_store_multi_tenant = {{ server.storage.swift_store.get('multi_tenant', False)|lower }}
+swift_store_multi_tenant = {{ server.storage.swift.store.get('multi_tenant', False)|lower }}
 
 # When set to 0, a single-tenant store will only use one container to
 # store all images. When set to an integer value between 1 and 32, a
@@ -883,27 +883,27 @@ swift_store_multi_tenant = {{ server.storage.swift_store.get('multi_tenant', Fal
 # option is set to 2, then 16^2=256 containers will be used to store
 # images. (integer value)
 #swift_store_multiple_containers_seed = 0
-swift_store_multiple_containers_seed = {{ server.storage.swift_store.get('multiple_containers_seed', 0) }}
+swift_store_multiple_containers_seed = {{ server.storage.swift.store.get('multiple_containers_seed', 0) }}
 
 # A list of tenants that will be granted read/write access on all
 # Swift containers created by Glance in multi-tenant mode. (list
 # value)
 #swift_store_admin_tenants =
-{% if server.storage.swift_store.admin_tenants is defined %}
-swift_store_admin_tenants = {{ server.storage.swift_store.admin_tenants }}
+{% if server.storage.swift.store.admin_tenants is defined %}
+swift_store_admin_tenants = {{ server.storage.swift.store.admin_tenants }}
 {% endif %}
 
 # If set to False, disables SSL layer compression of https swift
 # requests. Setting to False may improve performance for images which
 # are already in a compressed format, eg qcow2. (boolean value)
 #swift_store_ssl_compression = true
-swift_store_ssl_compression = {{ server.storage.swift_store.get('ssl_compression', True)|lower }}
+swift_store_ssl_compression = {{ server.storage.swift.store.get('ssl_compression', True)|lower }}
 
 # The number of times a Swift download will be retried before the
 # request fails. (integer value)
 #swift_store_retry_get_count = 0
-{% if server.storage.swift_store.retry_get_count is defined %}
-swift_store_retry_get_count = {{ server.storage.swift_store.retry_get_count }}
+{% if server.storage.swift.store.retry_get_count is defined %}
+swift_store_retry_get_count = {{ server.storage.swift.store.retry_get_count }}
 {% endif %}
 
 # The period of time (in seconds) before token expirationwhen
@@ -911,8 +911,8 @@ swift_store_retry_get_count = {{ server.storage.swift_store.retry_get_count }}
 # means that if token is going to expire in 1 min then glance_store
 # request new user token. (integer value)
 #swift_store_expire_soon_interval = 60
-{% if server.storage.swift_store.expire_soon_interval is defined %}
-swift_store_expire_soon_interval = {{ server.storage.swift_store.expire_soon_interval }}
+{% if server.storage.swift.store.expire_soon_interval is defined %}
+swift_store_expire_soon_interval = {{ server.storage.swift.store.expire_soon_interval }}
 {% endif %}
 
 # If set to True create a trust for each add/get request to Multi-
@@ -922,15 +922,15 @@ swift_store_expire_soon_interval = {{ server.storage.swift_store.expire_soon_int
 # Please note that this option is considered only and only if
 # swift_store_multi_tenant=True (boolean value)
 #swift_store_use_trusts = true
-{% if server.storage.swift_store.use_trusts is defined %}
-swift_store_use_trusts = {{ server.storage.swift_store.use_trusts|lower }}
+{% if server.storage.swift.store.use_trusts is defined %}
+swift_store_use_trusts = {{ server.storage.swift.store.use_trusts|lower }}
 {% endif %}
 
 # The reference to the default swift account/backing store parameters
 # to use for adding new images. (string value)
 #default_swift_reference = ref1
-{% if server.storage.swift_store.default_swift_reference is defined %}
-default_swift_reference = {{ server.storage.swift_store.default_swift_reference }}
+{% if server.storage.swift.store.default_swift_reference is defined %}
+default_swift_reference = {{ server.storage.swift.store.default_swift_reference }}
 {% endif %}
 
 # Version of the authentication service to use. Valid versions are 2
@@ -938,29 +938,29 @@ default_swift_reference = {{ server.storage.swift_store.default_swift_reference 
 # (deprecated - use "auth_version" in swift_store_config_file) (string
 # value)
 #swift_store_auth_version = 2
-swift_store_auth_version = {{ server.storage.swift_store.auth_version }}
+swift_store_auth_version = {{ server.storage.swift.store.auth.version }}
 
 # The address where the Swift authentication service is listening.
 # (deprecated - use "auth_address" in swift_store_config_file) (string
 # value)
 #swift_store_auth_address = <None>
-swift_store_auth_address = {{ server.storage.swift_store.auth_address }}
+swift_store_auth_address = {{ server.storage.swift.store.auth.address }}
 
 # The user to authenticate against the Swift authentication service
 # (deprecated - use "user" in swift_store_config_file) (string value)
 #swift_store_user = <None>
-swift_store_user = {{ server.storage.swift_store.user }}
+swift_store_user = {{ server.storage.swift.store.user }}
 
 # Auth key for the user authenticating against the Swift
 # authentication service. (deprecated - use "key" in
 # swift_store_config_file) (string value)
 #swift_store_key = <None>
-swift_store_key = {{ server.storage.swift_store.key }}
+swift_store_key = {{ server.storage.swift.store.key }}
 
 # The config file that has the swift account(s)configs. (string value)
 #swift_store_config_file = <None>
-{% if server.storage.swift_store.config_file is defined %}
-swift_store_config_file = {{ server.storage.swift_store.config_file }}
+{% if server.storage.swift.store.config_file is defined %}
+swift_store_config_file = {{ server.storage.swift.store.config_file }}
 {% endif %}
 
 {% endif %}

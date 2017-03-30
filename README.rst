@@ -135,15 +135,17 @@ Swift integration glance
         version: mitaka
         storage:
           engine: swift,http
-          swift_store:
-            auth_version: 2
-            auth_address: http://keystone.example.com:5000/v2.0
-            endpoint_type: publicURL
-            container: glance
-            create_container_on_put: true
-            retry_get_count: 5
-            user: 2ec7966596504f59acc3a76b3b9d9291:glance-user
-            key: someRandomPassword
+          swift:
+            store:
+              auth:
+                address: http://keystone.example.com:5000/v2.0
+                version: 2
+              endpoint_type: publicURL
+              container: glance
+              create_container_on_put: true
+              retry_get_count: 5
+              user: 2ec7966596504f59acc3a76b3b9d9291:glance-user
+              key: someRandomPassword
 
 
 Client role
