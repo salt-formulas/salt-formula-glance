@@ -16,7 +16,24 @@
           'enabled': false
         }
     },
-}, merge=pillar.glance.get('server', {})) %}
+}, merge=salt['grains.filter_by']({
+    'xenial': {
+        'pkgs': ['glance', 'glance-api', 'glance-registry', 'glance-common', 'python-glance', 'python-glance-store', 'python-glanceclient', 'gettext-base', 'python-memcache', 'python-pycadf'],
+        'services': ['glance-api', 'glance-registry'],
+        'notification': False,
+        'audit': {
+          'enabled': false
+        }
+    },
+    'trusty': {
+        'pkgs': ['glance', 'glance-api', 'glance-registry', 'glance-common', 'python-glance', 'python-glanceclient', 'gettext-base', 'python-memcache', 'python-pycadf'],
+        'services': ['glance-api', 'glance-registry'],
+        'notification': False,
+        'audit': {
+          'enabled': false
+        }
+    },
+}, grain='oscodename', merge=pillar.glance.get('server', {}))) %}
 
 {% set client = salt['grains.filter_by']({
     'Debian': {
