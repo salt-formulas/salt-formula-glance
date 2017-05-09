@@ -174,6 +174,26 @@ Enable CORS parameters
           allow_credentials: True
           max_age: 86400
 
+Enable Viewing Multiple Locations
+---------------------------------
+If you want to expose all locations available (for example when you have
+multiple backends configured), then you can configure this like so:
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        show_multiple_locations: True
+        location_strategy: store_type
+        store_type_preference: rbd,swift,file
+
+Please note: the show_multiple_locations option is deprecated since Newton and is planned
+             to be handled by policy files _only_ starting with the Pike release.
+
+This feature is convenient in a scenario when you have swift and rbd configured and want to
+benefit from rbd enhancements.
+
+
 Client role
 -----------
 
