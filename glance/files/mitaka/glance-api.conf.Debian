@@ -73,6 +73,7 @@ show_image_direct_url = true
 # security risk, so use this setting with caution! Setting this to
 # true overrides the show_image_direct_url option. (boolean value)
 #show_multiple_locations = false
+show_multiple_locations = {{ server.get('show_multiple_locations', False) | lower }}
 
 # Maximum size of image a user can upload in bytes. Defaults to
 # 1099511627776 bytes (1 TB).WARNING: this value should only be
@@ -130,6 +131,11 @@ show_image_direct_url = true
 # 'location_order' and 'store_type'. (string value)
 # Allowed values: location_order, store_type
 #location_strategy = location_order
+{% if server.get('location_strategy', 'location_order') == 'location_order' %}
+location_strategy = location_order
+{% else %}
+location_strategy = store_type
+{% endif %}
 
 # The location of the property protection file.This file contains the
 # rules for property protections and the roles/policies associated
@@ -1847,6 +1853,9 @@ flavor=keystone
 # option as image location strategy defined by the 'location_strategy'
 # config option. (list value)
 #store_type_preference =
+{% if server.get('location_strategy', 'location_order') == 'store_type' and server.store_type_preference is defined %}
+store_type_preference = {{ server.store_type_preference }}
+{% endif %}
 
 
 [task]
