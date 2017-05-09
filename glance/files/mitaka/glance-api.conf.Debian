@@ -828,7 +828,7 @@ stores = {{ server.storage.engine }}
 # If True, swiftclient won't check for a valid SSL certificate when
 # authenticating. (boolean value)
 #swift_store_auth_insecure = false
-swift_store_auth_insecure = {{ server.storage.swift.store.auth.get('insecure', False)|lower }}
+swift_store_auth_insecure = {{ server.storage.swift.store.get('auth', {}).get('insecure', False)|lower }}
 
 # A string giving the CA certificate file to use in SSL connections
 # for verifying certs. (string value)
@@ -962,32 +962,40 @@ default_swift_reference = {{ server.storage.swift.store.default_swift_reference 
 # (deprecated - use "auth_version" in swift_store_config_file) (string
 # value)
 #swift_store_auth_version = 2
+{% if server.storage.swift.store.get('auth', {}).get('version', False) %}
 swift_store_auth_version = {{ server.storage.swift.store.auth.version }}
+{% endif %}
 
 # The address where the Swift authentication service is listening.
 # (deprecated - use "auth_address" in swift_store_config_file) (string
 # value)
 #swift_store_auth_address = <None>
+{% if server.storage.swift.store.get('auth', {}).get('address', False) %}
 swift_store_auth_address = {{ server.storage.swift.store.auth.address }}
+{% endif %}
 
 # The user to authenticate against the Swift authentication service
 # (deprecated - use "user" in swift_store_config_file) (string value)
 #swift_store_user = <None>
+{% if server.storage.swift.store.user is defined %}
 swift_store_user = {{ server.storage.swift.store.user }}
+{% endif %}
 
 # Auth key for the user authenticating against the Swift
 # authentication service. (deprecated - use "key" in
 # swift_store_config_file) (string value)
 #swift_store_key = <None>
+{% if server.storage.swift.store.key is defined %}
 swift_store_key = {{ server.storage.swift.store.key }}
+{% endif %}
 
 # The config file that has the swift account(s)configs. (string value)
 #swift_store_config_file = <None>
-{% if server.storage.swift.store.config_file is defined %}
-swift_store_config_file = {{ server.storage.swift.store.config_file }}
+{% if server.storage.swift.store.references is defined %}
+swift_store_config_file = /etc/glance/swift-stores.conf
+{% endif %}
 {% endif %}
 
-{% endif %}
 
 {%- if 'rbd' in storage_engines %}
 # RADOS images will be chunked into objects of this size (in

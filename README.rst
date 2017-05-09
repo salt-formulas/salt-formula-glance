@@ -160,6 +160,30 @@ Swift integration glance
               user: 2ec7966596504f59acc3a76b3b9d9291:glance-user
               key: someRandomPassword
 
+Another way, which also supports multiple swift backends, can be configured like this:
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        enabled: true
+        version: mitaka
+        storage:
+          engine: swift,http
+          swift:
+            store:
+              endpoint_type: publicURL
+              container: glance
+              create_container_on_put: true
+              retry_get_count: 5
+              references:
+                my_objectstore_reference_1:
+                  auth:
+                    address: http://keystone.example.com:5000/v2.0
+                    version: 2
+                  user: 2ec7966596504f59acc3a76b3b9d9291:glance-user
+                  key: someRandomPassword
+
 Enable CORS parameters
 
 .. code-block:: yaml

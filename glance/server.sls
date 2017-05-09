@@ -98,6 +98,17 @@ glance_glare_service:
 {%- endif %}
 {%- endif %}
 
+{% if server.storage.get('swift', {}).get('store', {}).get('references', {}) %}
+/etc/glance/swift-stores.conf:
+  file.managed:
+  - source: salt://glance/files/_backends/_swift.conf
+  - template: jinja
+  - require:
+    - pkg: glance_packages
+  - watch_in:
+    - service: glance_services
+{% endif %}
+
 {%- if not grains.get('noservices', False) %}
 
 glance_services:

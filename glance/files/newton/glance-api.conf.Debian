@@ -2604,7 +2604,7 @@ rbd_store_ceph_conf = /etc/ceph/ceph.conf
 #  (boolean value)
 {%- if 'swift' in storage_engines %}
 #swift_store_auth_insecure = false
-swift_store_auth_insecure = {{ server.storage.swift.store.auth.get('insecure', False)|lower }}
+swift_store_auth_insecure = {{ server.storage.swift.store.get('auth', {}).get('insecure', False)|lower }}
 
 #
 # Path to the CA bundle file.
@@ -3052,7 +3052,9 @@ default_swift_reference = {{ server.storage.swift.store.default_swift_reference 
 # The option 'auth_version' in the Swift back-end configuration file is
 # used instead.
 #swift_store_auth_version = 2
+{% if server.storage.swift.store.get('auth', {}).get('version', False) %}
 swift_store_auth_version = {{ server.storage.swift.store.auth.version }}
+{% endif %}
 
 # DEPRECATED: The address where the Swift authentication service is listening.
 # (string value)
@@ -3062,7 +3064,9 @@ swift_store_auth_version = {{ server.storage.swift.store.auth.version }}
 # The option 'auth_address' in the Swift back-end configuration file is
 # used instead.
 #swift_store_auth_address = <None>
+{% if server.storage.swift.store.get('auth', {}).get('address', False) %}
 swift_store_auth_address = {{ server.storage.swift.store.auth.address }}
+{% endif %}
 
 # DEPRECATED: The user to authenticate against the Swift authentication service.
 # (string value)
@@ -3071,7 +3075,9 @@ swift_store_auth_address = {{ server.storage.swift.store.auth.address }}
 # Reason:
 # The option 'user' in the Swift back-end configuration file is set instead.
 #swift_store_user = <None>
+{% if server.storage.swift.store.user is defined %}
 swift_store_user = {{ server.storage.swift.store.user }}
+{% endif %}
 
 # DEPRECATED: Auth key for the user authenticating against the Swift
 # authentication service. (string value)
@@ -3081,7 +3087,9 @@ swift_store_user = {{ server.storage.swift.store.user }}
 # The option 'key' in the Swift back-end configuration file is used
 # to set the authentication key instead.
 #swift_store_key = <None>
+{% if server.storage.swift.store.key is defined %}
 swift_store_key = {{ server.storage.swift.store.key }}
+{% endif %}
 
 #
 # Absolute path to the file containing the swift account(s)
@@ -3103,8 +3111,8 @@ swift_store_key = {{ server.storage.swift.store.key }}
 #
 #  (string value)
 #swift_store_config_file = <None>
-{% if server.storage.swift.store.config_file is defined %}
-swift_store_config_file = {{ server.storage.swift.store.config_file }}
+{% if server.storage.swift.store.references is defined %}
+swift_store_config_file = /etc/glance/swift-stores.conf
 {% endif %}
 
 {% endif %}
