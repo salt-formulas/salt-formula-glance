@@ -1,7 +1,7 @@
 glance:
   server:
     enabled: true
-    version: liberty
+    version: mitaka
     workers: 1
     database:
       engine: mysql
