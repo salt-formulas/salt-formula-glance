@@ -1,7 +1,7 @@
 glance:
   server:
     enabled: true
-    version: liberty
+    version: mitaka
     workers: 1
     show_multiple_locations: True
     location_strategy: store_type
