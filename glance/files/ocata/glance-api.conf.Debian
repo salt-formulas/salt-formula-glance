@@ -415,7 +415,7 @@ show_multiple_locations = {{ server.get('show_multiple_locations', False) | lowe
 #
 #  (boolean value)
 #enable_v1_api = true
-enable_v1_api=False
+enable_v1_api = {{ server.get('enable_v1_api', False) }}
 
 #
 # Deploy the v2 OpenStack Images API.
@@ -446,7 +446,7 @@ enable_v1_api=False
 #
 #  (boolean value)
 #enable_v2_api = true
-enable_v2_api=True
+enable_v2_api = {{ server.get('enable_v2_api', True) }}
 
 #
 # Deploy the v1 API Registry service.
@@ -470,6 +470,7 @@ enable_v2_api=True
 #
 #  (boolean value)
 #enable_v1_registry = true
+enable_v1_registry = {{ server.get('enable_v1_registry', server.get('enable_v1_api', False)) }}
 
 #
 # Deploy the v2 API Registry service.
@@ -496,6 +497,7 @@ enable_v2_api=True
 #
 #  (boolean value)
 #enable_v2_registry = true
+enable_v2_registry = {{ server.get('enable_v2_registry', True) }}
 
 #
 # Host address of the pydev server.

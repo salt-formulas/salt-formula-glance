@@ -211,6 +211,17 @@ Enable CORS parameters
           allow_credentials: True
           max_age: 86400
 
+Enable/disable diffent API versions
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        enable_v1_api: False
+        enable_v1_registry: False
+        enable_v2_api: True
+        enable_v2_registry: True
+
 Enable Viewing Multiple Locations
 ---------------------------------
 If you want to expose all locations available (for example when you have
