@@ -1868,6 +1868,7 @@ store_type_preference = {{ server.store_type_preference }}
 {% endif %}
 
 
+{% if server.get('tasks', {}).get('enabled', False) %}
 [task]
 
 #
@@ -1898,6 +1899,7 @@ store_type_preference = {{ server.store_type_preference }}
 # estimations and you should do them based on the worst case scenario
 # and be prepared to act in case they were wrong. (string value)
 #work_dir = <None>
+work_dir= {{ server.tasks.get('work_dir', '/var/lib/glance/import') }}
 
 
 [taskflow_executor]
@@ -1916,3 +1918,39 @@ store_type_preference = {{ server.store_type_preference }}
 # 'parallel'. (integer value)
 # Deprecated group/name - [task]/eventlet_executor_pool_size
 #max_workers = 10
+#
+
+# Set the desired image conversion format.
+#
+# Provide a valid image format to which you want images to be
+# converted before they are stored for consumption by Glance.
+# Appropriate image format conversions are desirable for specific
+# storage backends in order to facilitate efficient handling of
+# bandwidth and usage of the storage infrastructure.
+#
+# By default, ``conversion_format`` is not set and must be set
+# explicitly in the configuration file.
+#
+# The allowed values for this option are ``raw``, ``qcow2`` and
+# ``vmdk``. The  ``raw`` format is the unstructured disk format and
+# should be chosen when RBD or Ceph storage backends are used for
+# image storage. ``qcow2`` is supported by the QEMU emulator that
+# expands dynamically and supports Copy on Write. The ``vmdk`` is
+# another common disk format supported by many common virtual machine
+# monitors like VMWare Workstation.
+#
+# Possible values:
+#     * qcow2
+#     * raw
+#     * vmdk
+#
+# Related options:
+#     * disk_formats
+#
+#  (string value)
+# Allowed values: qcow2, raw, vmdk
+{% if server.tasks.conversion_format is defined %}
+conversion_format = {{ server.tasks.conversion_format }}
+{% endif %}
+
+{% endif %}

@@ -258,4 +258,15 @@ rule_{{ name }}_absent:
 
 {%- endfor %}
 
+{%- if server.get('tasks', {}).get('enabled', False) %}
+glance_task_direcotry:
+  file.directory:
+  - name: {{ server.tasks.get('work_dir', '/var/lib/glance/import') }}
+  - mode: 755
+  - user: glance
+  - group: glance
+  - require:
+    - pkg: glance_packages
+{%- endif %}
+
 {%- endif %}

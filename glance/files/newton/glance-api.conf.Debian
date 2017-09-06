@@ -4352,6 +4352,9 @@ store_type_preference = {{ server.store_type_preference }}
 #
 #  (string value)
 #work_dir = /work_dir
+{% if server.get('tasks', {}).get('enabled', False) %}
+work_dir= {{ server.tasks.get('work_dir', '/var/lib/glance/import') }}
+{% endif %}
 
 
 [taskflow_executor]
@@ -4433,4 +4436,8 @@ store_type_preference = {{ server.store_type_preference }}
 #
 #  (string value)
 # Allowed values: qcow2, raw, vmdk
-#conversion_format = raw
+{% if server.get('tasks', {}).get('enabled', False) %}
+{% if server.tasks.conversion_format is defined %}
+conversion_format = {{ server.tasks.conversion_format }}
+{% endif %}
+{% endif %}

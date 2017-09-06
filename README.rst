@@ -211,6 +211,19 @@ Enable CORS parameters
           allow_credentials: True
           max_age: 86400
 
+Enable Tasks API for automatic image conversion.
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        storage:
+          engine: rbd,file,http
+        tasks:
+          enabled: True
+          work_dir: /var/lib/glance/import
+          conversion_format: raw
+
 Enable Viewing Multiple Locations
 ---------------------------------
 If you want to expose all locations available (for example when you have
