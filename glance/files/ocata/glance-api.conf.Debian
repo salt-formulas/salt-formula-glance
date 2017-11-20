@@ -1247,7 +1247,7 @@ auth_region = {{ server.identity.region }}
 #  (string value)
 # Allowed values: http, https
 #registry_client_protocol = http
-registry_client_protocol = http
+registry_client_protocol = {{ server.registry.get('protocol', 'http') }}
 
 #
 # Absolute path to the private key file.
@@ -1314,7 +1314,9 @@ registry_client_protocol = http
 #     * registry_client_insecure
 #
 #  (string value)
-#registry_client_ca_file = /etc/ssl/cafile/file.ca
+{%- if server.registry.get('protocol', 'http') == 'https' %}
+registry_client_ca_file = {{ server.registry.get('cacert_file', server.cacert_file) }}
+{%- endif %}
 
 #
 # Set verification of the registry server certificate.
@@ -2098,6 +2100,8 @@ stores = {{ server.storage.engine }}
 #
 #  (string value)
 #cinder_catalog_info = volumev2::publicURL
+
+
 cinder_catalog_info = volumev2::{{ server.identity.get('endpoint_type', 'publicURL') }}
 
 #
@@ -2162,7 +2166,10 @@ cinder_os_region_name = {{ server.identity.region }}
 #     * cinder_api_insecure
 #
 #  (string value)
-#cinder_ca_certificates_file = <None>
+
+{%- if 'cinder' in storage_engines and server.storage.cinder.get('protocol', 'http') == 'https' %}
+cinder_ca_certificates_file = {{ server.storage.cinder.get('cacert_file', server.cacert_file) }}
+{%- endif %}
 
 #
 # Number of cinderclient retries on failed http calls.
@@ -3394,8 +3401,12 @@ project_domain_id = {{ server.identity.get('domain', 'default') }}
 project_name = {{ server.identity.tenant }}
 username = {{ server.identity.user }}
 password = {{ server.identity.password }}
-auth_uri=http://{{ server.identity.host }}:5000
-auth_url=http://{{ server.identity.host }}:35357
+auth_uri={{ server.identity.get('protocol', 'http') }}://{{ server.identity.host }}:5000
+auth_url={{ server.identity.get('protocol', 'http') }}://{{ server.identity.host }}:35357
+{%- if server.identity.get('protocol', 'http') == 'https' %}
+cafile={{ server.identity.get('cacert_file', server.cacert_file) }}
+{%- endif %}
+
 token_cache_time = -1
 
 {%- if server.cache is defined %}

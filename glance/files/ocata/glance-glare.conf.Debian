@@ -858,7 +858,10 @@ cinder_os_region_name = {{ server.identity.region }}
 #     * cinder_api_insecure
 #
 #  (string value)
-#cinder_ca_certificates_file = <None>
+
+{%- if 'cinder' in storage_engines and server.storage.cinder.get('protocol', 'http') == 'https' %}
+cinder_ca_certificates_file = {{ server.storage.cinder.get('cacert_file', server.cacert_file) }}
+{%- endif %}
 
 #
 # Number of cinderclient retries on failed http calls.
@@ -2052,8 +2055,11 @@ project_domain_id = {{ server.identity.get('domain', 'default') }}
 project_name = {{ server.identity.tenant }}
 username = {{ server.identity.user }}
 password = {{ server.identity.password }}
-auth_uri=http://{{ server.identity.host }}:5000
-auth_url=http://{{ server.identity.host }}:35357
+auth_uri={{ server.identity.get('protocol', 'http') }}://{{ server.identity.host }}:5000
+auth_url={{ server.identity.get('protocol', 'http') }}://{{ server.identity.host }}:35357
+{%- if server.identity.get('protocol', 'http') == 'https' %}
+cafile={{ server.identity.get('cacert_file', server.cacert_file) }}
+{%- endif %}
 token_cache_time = -1
 
 {%- if server.cache is defined %}
