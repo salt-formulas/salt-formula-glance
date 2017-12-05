@@ -567,7 +567,7 @@ log_dir = /var/log/glance
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
 #connection = <None>
-connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8&read_timeout=60{%- if server.database.get('ssl',{}).get('enabled',False) %}&ssl_ca={{ server.database.ssl.get('cacert_file', system_cacerts_file) }}{% endif %}
+connection = {%- if server.database.engine == 'mysql' -%}{{ server.database.engine }}+pymysql{%- else -%}{{ server.database.engine }}{%- endif -%}://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8&read_timeout=60{%- if server.database.get('ssl',{}).get('enabled',False) %}&ssl_ca={{ server.database.ssl.get('cacert_file', system_cacerts_file) }}{% endif %}
 
 
 # The SQLAlchemy connection string to use to connect to the slave database.
