@@ -322,6 +322,30 @@ Glance images
               protected: false
               location: http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img
 
+Enhanced logging with logging.conf
+----------------------------------
+
+By default logging.conf is disabled.
+
+That is possible to enable per-binary logging.conf with new variables:
+  * openstack_log_appender - set it to true to enable log_config_append for all OpenStack services;
+  * openstack_fluentd_handler_enabled - set to true to enable FluentHandler for all Openstack services.
+
+Only WatchedFileHandler and FluentHandler are available.
+
+Also it is possible to configure this with pillar:
+
+.. code-block:: yaml
+
+  glance:
+    server:
+      logging:
+        log_appender: true
+        log_handlers:
+          watchedfile:
+            enabled: true
+          fluentd:
+            enabled: true
 
 Usage
 =====
