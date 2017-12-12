@@ -1,9 +1,12 @@
-{%- set system_cacerts_file = salt['grains.filter_by']({
-    'Debian': '/etc/ssl/certs/ca-certificates.crt',
-    'RedHat': '/etc/pki/tls/certs/ca-bundle.crt'
-})%}
+{%- set default_params = {
+    'cacert_file': salt['grains.filter_by']({
+        'Debian': '/etc/ssl/certs/ca-certificates.crt',
+        'RedHat': '/etc/pki/tls/certs/ca-bundle.crt'
+    })}
+%}
 
 {% set server = salt['grains.filter_by']({
+    'BaseDefaults': default_params,
     'Debian': {
         'pkgs': ['glance', 'glance-api', 'glance-registry', 'glance-common', 'python-glance', 'python-glance-store', 'python-glanceclient', 'gettext-base', 'python-memcache', 'python-pycadf'],
         'services': ['glance-api', 'glance-registry'],
@@ -26,7 +29,7 @@
         'glance_uid': 302,
         'glance_gid': 302
     },
-}, merge=pillar.glance.get('server', {})) %}
+}, merge=pillar.glance.get('server', {}), base='BaseDefaults') %}
 
 {% set client = salt['grains.filter_by']({
     'Debian': {
