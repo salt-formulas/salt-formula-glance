@@ -134,18 +134,27 @@ glance_services:
     {%- if server.database.get('ssl',{}).get('enabled',False)  %}
     - file: mysql_ca_glance_server
     {% endif %}
+ #{%- if grains.get('noservices') %}
+ #- onlyif: /bin/false
+ #{%- endif %}
 
 glance_install_database:
   cmd.run:
   - name: glance-manage db_sync
   - require:
     - service: glance_services
+ #{%- if grains.get('noservices') %}
+ #- onlyif: /bin/false
+ #{%- endif %}
 
 glance_load_metadatafs:
   cmd.run:
   - name: glance-manage db_load_metadefs
   - require:
     - cmd: glance_install_database
+ #{%- if grains.get('noservices') %}
+ #- onlyif: /bin/false
+ #{%- endif %}
 
 {%- if server.get('image_cache', {}).get('enabled', False) %}
 glance_cron_glance-cache-pruner:
