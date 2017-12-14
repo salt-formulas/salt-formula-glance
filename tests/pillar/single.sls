@@ -37,3 +37,7 @@ glance:
     policy:
       publicize_image: "role:admin"
       add_member:
+    tasks:
+      enabled: True
+      work_dir: /var/lib/glance/import
+      conversion_format: raw
