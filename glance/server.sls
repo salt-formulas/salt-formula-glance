@@ -181,6 +181,14 @@ glance_entrypoint:
 
 {%- endif %}
 
+/srv/glance:
+  file.directory:
+  - mode: 755
+  - user: glance
+  - group: glance
+  - require:
+    - pkg: glance_packages
+
 /var/lib/glance/images:
   file.directory:
   - mode: 755
@@ -201,7 +209,7 @@ glance_download_{{ image.name }}:
 
 glance_install_{{ image.name }}:
   cmd.wait:
-  - name: source /root/keystonerc; glance image-create --name '{{ image.name }}' --is-public {{ image.public }} --container-format bare --disk-format {{ image.format }} < {{ image.file }}
+  - name: source /root/keystonerc; glance image-create --name '{{ image.name }}' {% if image.visibility is defined %}--visibility {{ image.visibility }}{% else %}--is-public {{ image.public }}{% endif %} --container-format bare --disk-format {{ image.format }} < {{ image.file }}
   - cwd: /srv/glance
   - require:
     - service: glance_services
@@ -222,7 +230,7 @@ glance_download_{{ image_name }}:
 
 glance_install_image_{{ image_name }}:
   cmd.run:
-  - name: source /root/keystonerc; glance image-create --name '{{ image_name }}' --is-public {{ image.public }} --container-format bare --disk-format {{ image.format }} < /srv/glance/{{ image.file }}
+  - name: source /root/keystonerc; glance image-create --name '{{ image_name }}' {% if image.visibility is defined %}--visibility {{ image.visibility }}{% else %}--is-public {{ image.public }}{% endif %} --container-format bare --disk-format {{ image.format }} < /srv/glance/{{ image.file }}
   - require:
     - service: glance_services
     - cmd: glance_download_{{ image_name }}
