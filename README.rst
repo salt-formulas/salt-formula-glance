@@ -47,11 +47,11 @@ Sample pillars
         storage:
           engine: file
         images:
-        - name: "CirrOS 0.3.1"
+        - name: "CirrOS"
           format: qcow2
-          file: cirros-0.3.1-x86_64-disk.img
-          source: http://cdn.download.cirros-cloud.net/0.3.1/cirros-0.3.1-x86_64-disk.img
-          public: true
+          file: cirros-0.4.0-x86_64-disk.img
+          source: https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+          visibility: true
         audit:
           enabled: false
         api_limit_max: 100

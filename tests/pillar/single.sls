@@ -37,3 +37,15 @@ glance:
     policy:
       publicize_image: "role:admin"
       add_member:
+    images:
+        - name: "CirrOS"
+          format: qcow2
+          file: cirros-0.4.0-x86_64-disk.img
+          source: https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+          visibility: true
+        - name: "CirrOS4"
+          format: qcow2
+          file: cirros-0.4.0-x86_64-disk.img
+          source: https://download.cirros-cloud.net/0.4.0/cirros-0.4.0-x86_64-disk.img
+          # TODO:  for backward compatibility, test public option.
+          public: true
