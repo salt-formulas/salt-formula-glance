@@ -136,6 +136,7 @@
 #
 #  (integer value)
 #image_member_quota = 128
+{% if server.quota is defined %}{% if server.quota.image_member_quota is defined %}image_member_quota = {{ server.quota.image_member_quota|default('128') }}{% endif %}{% endif %}
 
 #
 # Maximum number of properties allowed on an image.
@@ -151,6 +152,7 @@
 #
 #  (integer value)
 #image_property_quota = 128
+{% if server.quota is defined %}{% if server.quota.image_property_quota is defined %}image_property_quota = {{ server.quota.image_property_quota|default('128') }}{% endif %}{% endif %}
 
 #
 # Maximum number of tags allowed on an image.
@@ -162,6 +164,7 @@
 #
 #  (integer value)
 #image_tag_quota = 128
+{% if server.quota is defined %}{% if server.quota.image_tag_quota is defined %}image_tag_quota = {{ server.quota.image_tag_quota|default('128') }}{% endif %}{% endif %}
 
 #
 # Maximum number of locations allowed on an image.
@@ -173,6 +176,7 @@
 #
 #  (integer value)
 #image_location_quota = 10
+{% if server.quota is defined %}{% if server.quota.image_location_quota is defined %}image_location_quota = {{ server.quota.image_location_quota|default('10') }}{% endif %}{% endif %}
 
 #
 # Python module path of data access API.
@@ -381,6 +385,7 @@ show_multiple_locations = {{ server.get('show_multiple_locations', False) | lowe
 #
 #  (string value)
 #user_storage_quota = 0
+{% if server.quota is defined %}{% if server.quota.user_storage_quota is defined %}user_storage_quota = {{ server.quota.user_storage_quota|default('0') }}{% endif %}{% endif %}
 
 #
 # Deploy the v1 OpenStack Images API.
