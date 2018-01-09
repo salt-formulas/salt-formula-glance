@@ -127,6 +127,21 @@ RabbitMQ HA setup
           virtual_host: '/openstack'
         ....
 
+Quota Options
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        ....
+        quota:
+          image_member_quota: -1
+          image_property_quota: 256
+          image_tag_quota: 256
+          image_location_quota: 15
+          user_storage_quota: 0
+        ....
+
 Configuring TLS communications
 ------------------------------
 
