@@ -19,10 +19,10 @@ install:
 env:
     - PLATFORM=trevorj/salty-whales:trusty SUITE=cluster
     - PLATFORM=trevorj/salty-whales:xenial SUITE=cluster
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single_ceph
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single_ceph
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single_barbican
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single_barbican
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-ceph
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-ceph
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-barbican
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-barbican
     - PLATFORM=trevorj/salty-whales:trusty SUITE=single
     - PLATFORM=trevorj/salty-whales:xenial SUITE=single
 
@@ -31,7 +31,8 @@ before_script:
   - make test | tail
 
 script:
-  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test -t tests/integration
+  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   webhooks:
