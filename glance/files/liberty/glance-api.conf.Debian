@@ -314,20 +314,45 @@ scrubber_datadir = /var/lib/glance/scrubber
 
 # The maximum number of image members allowed per image
 #image_member_quota = 128
+{%- if server.quota is defined %}
+{%- if server.quota.image_member is defined %}
+image_member_quota = {{ server.quota.image_member|default('128') }}
+{%- endif %}
+{%- endif %}
 
 # The maximum number of image properties allowed per image
 #image_property_quota = 128
+{%- if server.quota is defined %}
+{%- if server.quota.image_property is defined %}
+image_property_quota = {{ server.quota.image_property|default('128') }}
+{%- endif %}
+{%- endif %}
 
 # The maximum number of tags allowed per image
 #image_tag_quota = 128
+{%- if server.quota is defined %}
+{%- if server.quota.image_tag is defined %}
+image_tag_quota = {{ server.quota.image_tag|default('128') }}
+{%- endif %}
+{%- endif %}
 
 # The maximum number of locations allowed per image
 #image_location_quota = 10
+{%- if server.quota is defined %}
+{%- if server.quota.image_location is defined %}
+image_location_quota = {{ server.quota.image_location|default('10') }}
+{%- endif %}
+{%- endif %}
 
 # Set a system wide quota for every user.  This value is the total number
 # of bytes that a user can use across all storage systems.  A value of
 # 0 means unlimited.
 #user_storage_quota = 0
+{%- if server.quota is defined %}
+{%- if server.quota.user_storage is defined %}
+user_storage_quota = {{ server.quota.user_storage|default('0') }}
+{%- endif %}
+{%- endif %}
 
 # =============== Image Cache Options =============================
 
