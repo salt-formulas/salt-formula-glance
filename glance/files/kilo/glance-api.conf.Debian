@@ -1,4 +1,4 @@
-{%- from "glance/map.jinja" import server with context %}
+{%-- from "glance/map.jinja" import server with context %}
 [DEFAULT]
 # Show more verbose log output (sets INFO log level output)
 #verbose = False
@@ -214,9 +214,9 @@ registry_client_protocol = http
 #auth_url = None
 # Keystone region
 #auth_region = None
-{% if server.identity.region is defined %}
+{%- if server.identity.region is defined %}
 auth_region = {{ server.identity.region }}
-{% endif %}
+{%- endif %}
 # Auth strategy
 #auth_strategy = keystone
 
@@ -240,22 +240,22 @@ auth_region = {{ server.identity.region }}
 
 # Messaging driver used for 'messaging' notifications driver
 # rpc_backend = 'rabbit'
-{% if server.notification %}
+{%- if server.notification %}
 rpc_backend = rabbit
 notifier_strategy=rabbit
 notification_driver = messagingv2
 # Configuration options if sending notifications via rabbitmq (these are
 # the defaults)
 
-{%- if server.message_queue.members is defined %}
-rabbit_hosts = {% for member in server.message_queue.members -%}
+{%-- if server.message_queue.members is defined %}
+rabbit_hosts = {%- for member in server.message_queue.members -%}
                    {{ member.host }}:{{ member.get('port', 5672) }}
-                   {%- if not loop.last -%},{%- endif -%}
-               {%- endfor -%}
-{%- else %}
+                   {%-- if not loop.last -%},{%-- endif -%}
+               {%-- endfor -%}
+{%-- else %}
 rabbit_host = {{ server.message_queue.host }}
 rabbit_port = {{ server.message_queue.port }}
-{%- endif %}
+{%-- endif %}
 
 rabbit_use_ssl = false
 rabbit_userid = {{ server.message_queue.user }}
@@ -265,10 +265,10 @@ rabbit_notification_exchange = glance
 rabbit_notification_topic = notifications
 #rabbit_durable_queues = False
 
-{% else %}
+{%- else %}
 #notifier_strategy=qpid
 notifier_strategy=noop
-{% endif %}
+{%- endif %}
 # Configuration options if sending notifications via Qpid (these are
 # the defaults)
 qpid_notification_exchange = glance
@@ -304,25 +304,45 @@ scrubber_datadir = /var/lib/glance/scrubber
 
 # The maximum number of image members allowed per image
 #image_member_quota = 128
-{% if server.quota is defined %}{% if server.quota.image_member_quota is defined %}image_member_quota = {{ server.quota.image_member_quota|default('128') }}{% endif %}{% endif %}
+{%- if server.quota is defined %}
+{%- if server.quota.image_member is defined %}
+image_member_quota = {{ server.quota.image_member|default('128') }}
+{%- endif %}
+{%- endif %}
 
 # The maximum number of image properties allowed per image
 #image_property_quota = 128
-{% if server.quota is defined %}{% if server.quota.image_property_quota is defined %}image_property_quota = {{ server.quota.image_property_quota|default('128') }}{% endif %}{% endif %}
+{%- if server.quota is defined %}
+{%- if server.quota.image_property is defined %}
+image_property_quota = {{ server.quota.image_property|default('128') }}
+{%- endif %}
+{%- endif %}
 
 # The maximum number of tags allowed per image
 #image_tag_quota = 128
-{% if server.quota is defined %}{% if server.quota.image_tag_quota is defined %}image_tag_quota = {{ server.quota.image_tag_quota|default('128') }}{% endif %}{% endif %}
+{%- if server.quota is defined %}
+{%- if server.quota.image_tag is defined %}
+image_tag_quota = {{ server.quota.image_tag|default('128') }}
+{%- endif %}
+{%- endif %}
 
 # The maximum number of locations allowed per image
 #image_location_quota = 10
-{% if server.quota is defined %}{% if server.quota.image_location_quota is defined %}image_location_quota = {{ server.quota.image_location_quota|default('10') }}{% endif %}{% endif %}
+{%- if server.quota is defined %}
+{%- if server.quota.image_location is defined %}
+image_location_quota = {{ server.quota.image_location|default('10') }}
+{%- endif %}
+{%- endif %}
 
 # Set a system wide quota for every user.  This value is the total number
 # of bytes that a user can use across all storage systems.  A value of
 # 0 means unlimited.
 #user_storage_quota = 0
-{% if server.quota is defined %}{% if server.quota.user_storage_quota is defined %}user_storage_quota = {{ server.quota.user_storage_quota|default('0') }}{% endif %}{% endif %}
+{%- if server.quota is defined %}
+{%- if server.quota.user_storage is defined %}
+user_storage_quota = {{ server.quota.user_storage|default('0') }}
+{%- endif %}
+{%- endif %}
 
 # =============== Image Cache Options =============================
 
@@ -465,7 +485,7 @@ max_overflow = 30
 # Deprecated group/name - [DEFAULT]/lock_path (string value)
 #lock_path = /tmp
 
-{%- if server.identity.get('version', 2) == 2 %}
+{%-- if server.identity.get('version', 2) == 2 %}
 
 [keystone_authtoken]
 identity_uri = http://{{ server.identity.host }}:35357
@@ -476,7 +496,7 @@ revocation_cache_time = 10
 auth_uri=http://{{ server.identity.host }}:5000
 auth_url=http://{{ server.identity.host }}:35357
 
-{%- else %}
+{%-- else %}
 
 [keystone_authtoken]
 identity_uri = http://{{ server.identity.host }}:35357/v3
@@ -493,7 +513,7 @@ password = {{ server.identity.password }}
 auth_uri=http://{{ server.identity.host }}:5000/v3
 auth_url=http://{{ server.identity.host }}:35357/v3
 
-{%- endif %}
+{%-- endif %}
 
 [paste_deploy]
 # Name of the paste configuration file that defines the available pipelines
@@ -583,14 +603,14 @@ flavor=keystone
 # Deprecated group/name - [DEFAULT]/default_store
 # Default: 'file'
 
-{%- if server.storage.engine == 'file' %}
+{%-- if server.storage.engine == 'file' %}
 default_store = file
 stores = glance.store.filesystem.Store,
          glance.store.http.Store
-{%- else %}
+{%-- else %}
 default_store = {{ server.storage.engine }}
 stores = {{ server.storage.engine }}
-{%- endif %}
+{%-- endif %}
 # ============ Filesystem Store Options ========================
 
 # Directory that the Filesystem backend store
@@ -615,9 +635,9 @@ filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/g
 # system.  When show_multiple_locations is True the information in this
 # file will be returned with any location that is contained in this
 # store.
-{%- if server.filesystem_store_metadata_file is defined %}
+{%-- if server.filesystem_store_metadata_file is defined %}
 filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file', '/etc/glance/filesystem_store_metadata.json') }}
-{%- endif %}
+{%-- endif %}
 
 # ============ Swift Store Options =============================
 
@@ -773,7 +793,7 @@ filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file',
 
 # ============ RBD Store Options =============================
 
-{%- if server.storage.engine == 'rbd' %}
+{%-- if server.storage.engine == 'rbd' %}
 # ============ RBD Store Options =============================
 
 # Ceph configuration file path
@@ -797,7 +817,7 @@ rbd_store_pool = {{ server.storage.pool }}
 #rbd_store_chunk_size = 8
 rbd_store_chunk_size = {{ server.storage.chunk_size }}
 
-{%- endif %}
+{%-- endif %}
 
 # ============ Sheepdog Store Options =============================
 
@@ -822,9 +842,9 @@ cinder_catalog_info = volume:cinder:{{ server.identity.get('endpoint_type', 'pub
 
 # Region name of this node (string value)
 #os_region_name = <None>
-{% if server.identity.region is defined %}
+{%- if server.identity.region is defined %}
 os_region_name = {{ server.identity.region }}
-{% endif %}
+{%- endif %}
 # Location of ca certicates file to use for cinder client requests
 # (string value)
 #cinder_ca_certificates_file = <None>
