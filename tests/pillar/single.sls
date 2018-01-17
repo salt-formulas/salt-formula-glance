@@ -38,8 +38,8 @@ glance:
       publicize_image: "role:admin"
       add_member:
     quota:
-      image_member_quota: -1
-      image_property_quota: 256
-      image_tag_quota: 256
-      image_location_quota: 15
-      user_storage_quota: 0
+      image_member: -1
+      image_property: 256
+      image_tag: 256
+      image_location: 15
+      user_storage: 0
