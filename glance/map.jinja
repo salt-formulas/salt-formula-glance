@@ -16,7 +16,15 @@
           'enabled': false
         },
         'glance_uid': 302,
-        'glance_gid': 302
+        'glance_gid': 302,
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
     'RedHat': {
         'pkgs': ['openstack-glance', 'python-glanceclient','python-pycadf'],
@@ -27,7 +35,15 @@
           'enabled': false
         },
         'glance_uid': 302,
-        'glance_gid': 302
+        'glance_gid': 302,
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
 }, merge=pillar.glance.get('server', {}), base='BaseDefaults') %}
 

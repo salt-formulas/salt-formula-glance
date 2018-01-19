@@ -107,6 +107,73 @@ glance_glare_service:
 {%- endif %}
 {%- endif %}
 
+{%- set glance_glare_available = server.version in ['newton', 'ocata'] %}
+{%- if glance_glare_available %}
+  {%- set glance_services_list = server.services %}
+{%- else %}
+  {%- set glance_services_list = server.services + ['glance-glare'] %}
+{%- endif %}
+
+{%- if not grains.get('noservices', False) %}
+{%- for service_name in glance_services_list %}
+{{ service_name }}_default:
+  file.managed:
+    - name: /etc/default/{{ service_name }}
+    - source: salt://glance/files/default
+    - template: jinja
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ server }}
+    - require:
+      - pkg: glance_packages
+{%- if glance_glare_available %}
+      - pkg: glance_glare_package
+{%- endif %}
+    - watch_in:
+      - service: glance_services
+{%- if glance_glare_available %}
+      - service: glance_glare_service
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+
+{%- if server.logging.log_appender %}
+
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+glance_fluentd_logger_package:
+  pkg.installed:
+    - name: python-fluent-logger
+{%- endif %}
+
+{% for service_name in glance_services_list %}
+{{ service_name }}_logging_conf:
+  file.managed:
+    - name: /etc/glance/logging/logging-{{ service_name }}.conf
+    - source: salt://glance/files/logging.conf
+    - template: jinja
+    - makedirs: True
+    - user: glance
+    - group: glance
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ server }}
+    - require:
+      - pkg: glance_packages
+{%- if glance_glare_available %}
+      - pkg: glance_glare_package
+{%- endif %}
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: glance_fluentd_logger_package
+{%- endif %}
+    - watch_in:
+      - service: glance_services
+{%- if glance_glare_available %}
+      - service: glance_glare_service
+{%- endif %}
+{%- endfor %}
+
+{%- endif %}
+
 {% if server.storage.get('swift', {}).get('store', {}).get('references', {}) %}
 /etc/glance/swift-stores.conf:
   file.managed:

@@ -1,0 +1,110 @@
+{%- if pillar.get('fluentd', {}).get('agent', {}).get('enabled', False) %}
+{%- set positiondb = pillar.fluentd.agent.dir.positiondb %}
+agent:
+  config:
+    label:
+      forward_input:
+        input:
+          generic_forward_input:
+            type: forward
+            bind: 0.0.0.0
+            port: 24224
+        match:
+          route_openstack_glance:
+            tag: openstack.glance.*
+            type: relabel
+            label: openstack_glance
+      openstack_glance:
+        filter:
+          set_glance_fields:
+            tag: openstack.glance.*
+            type: record_transformer
+            enable_ruby: true
+            record:
+              - name: Severity
+                value: ${ {'TRACE'=>7,'DEBUG'=>7,'INFO'=>6,'AUDIT'=>6,'WARNING'=>4,'ERROR'=>3,'CRITICAL'=>2}[record['level']].to_i }
+              - name: severity_label
+                value: ${ record['level'] }
+              - name: programname
+                value: glance-${ tag_parts[2] }
+              - name: Payload
+                value: ${ record['message'] }
+              - name: python_module
+                value: ${ record['name'] }
+          parse_http_stats:
+            tag: openstack.glance
+            type: parser
+            key_name: Payload
+            reserve_data: true
+            emit_invalid_record_to_error: false
+            parser:
+              type: regexp
+              # Parse openstack http stats: https://regex101.com/r/Tf0XUK/1/
+              format: '\"(?<http_method>GET|POST|OPTIONS|DELETE|PUT|HEAD|TRACE|CONNECT|PATCH)\s(?<http_url>\S+)\s(?<http_version>[.\/\dHTFSP]+)\"\sstatus:\s(?<http_status>\d{3})\slen:\s(?<http_response_size>\d+)\stime:\s(?<http_response_time>\d+\.\d+)'
+              types: http_response_time:float
+        match:
+          unify_tag:
+            tag: openstack.glance.*
+            type: rewrite_tag_filter
+            rule:
+              - name: level
+                regexp: '.*'
+                result: openstack.glance
+          send_to_default:
+            tag: openstack.glance
+            type: copy
+            store:
+              - type: relabel
+                label: default_output
+              - type: rewrite_tag_filter
+                rule:
+                  - name: severity_label
+                    regexp: '.'
+                    result: metric.glance_log_messages
+              - type: rewrite_tag_filter
+                rule:
+                  - name: http_status
+                    regexp: '.'
+                    result: metric.glance_openstack_http_response
+          push_to_metric:
+            tag: 'metric.**'
+            type: relabel
+            label: default_metric
+      default_metric:
+        filter:
+          glance_logs_per_severity:
+            tag: metric.glance_log_messages
+            require:
+              - add_general_fields
+            type: prometheus
+            metric:
+              - name: log_messages
+                type: counter
+                desc: Total number of log lines by severity
+            label:
+              - name: service
+                value: glance
+              - name: level
+                value: ${severity_label}
+              - name: host
+                value: ${Hostname}
+          glance_openstack_http_response_times:
+            tag: metric.glance_openstack_http_response
+            require:
+              - add_general_fields
+            type: prometheus
+            metric:
+              - name: openstack_http_response_times
+                type: summary
+                desc: Total number of requests per method and status
+                key: http_response_time
+            label:
+              - name: http_method
+                value: ${http_method}
+              - name: http_status
+                value: ${http_status}
+              - name: service
+                value: glance
+              - name: host
+                value: ${Hostname}
+{% endif %}
