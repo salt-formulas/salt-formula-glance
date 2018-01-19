@@ -1,8 +1,15 @@
 dashboard:
+{%- if pillar.get('fluentd', {}).get('agent', {}).get('enabled', False) %}
+  glance_prometheus:
+    datasource: prometheus
+    format: json
+    template: glance/files/grafana_dashboards/glance_prometheus_fluentd.json
+{%- else %}
   glance_prometheus:
     datasource: prometheus
     format: json
     template: glance/files/grafana_dashboards/glance_prometheus.json
+{%- endif %}
   glance_influxdb:
     datasource: influxdb
     format: json

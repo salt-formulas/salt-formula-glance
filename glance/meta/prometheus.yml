@@ -40,7 +40,7 @@ server:
 {%- endraw %}
       {%- set log_threshold = monitoring.error_log_rate|float %}
       if: >-
-        sum(rate(log_messages{service="glance",level=~"error|emergency|fatal"}[5m])) without (level) > {{ log_threshold }}
+        sum(rate(log_messages{service="glance",level=~"(?i:(error|emergency|fatal))"}[5m])) without (level) > {{ log_threshold }}
 {%- raw %}
       labels:
         severity: warning
