@@ -554,7 +554,12 @@
 #  (integer value)
 # Minimum value: 0
 #image_cache_max_size = 10737418240
-image_cache_max_size = 189668314316
+{% if server.get('image_cache', {}).get('enabled', False) %}
+
+image_cache_max_size = {{ server.image_cache.get('max_size', '10737418240') }}
+image_cache_stall_time = {{ server.image_cache.get('stall_time', '86400') }}
+image_cache_dir = {{ server.image_cache.get('directory', '/var/lib/glance/image-cache/') }}
+{% endif %}
 
 {% if server.identity.region is defined %}
 os_region_name = {{ server.identity.region }}
@@ -583,7 +588,6 @@ os_region_name = {{ server.identity.region }}
 #  (integer value)
 # Minimum value: 0
 #image_cache_stall_time = 86400
-image_cache_stall_time = 86400
 
 #
 # Base directory for image cache.
@@ -617,7 +621,7 @@ image_cache_stall_time = 86400
 #
 #  (string value)
 #image_cache_dir = <None>
-image_cache_dir = /var/lib/glance/image-cache/
+#image_cache_dir = /var/lib/glance/image-cache/
 
 #
 # Address the registry server is hosted on.
