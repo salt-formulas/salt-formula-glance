@@ -1461,7 +1461,7 @@
   "sharedCrosshair": true,
   "style": "dark",
   "tags": [
-    "glance"
+    "openstack"
   ],
   "templating": {
     "list": [
