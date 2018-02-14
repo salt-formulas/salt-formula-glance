@@ -285,7 +285,7 @@ glance_install_{{ image.name }}:
 
 {%- endfor %}
 
-{%- for image_name, image in server.get('image', {}).iteritems() %}
+{%- for image_name, image in server.get('image', {}).items() %}
 
 glance_download_{{ image_name }}:
   cmd.run:
@@ -321,7 +321,7 @@ glance_filesystem_store_metadata_file:
     - service: glance_services
 {%- endif %}
 
-{%- for name, rule in server.get('policy', {}).iteritems() %}
+{%- for name, rule in server.get('policy', {}).items() %}
 
 {%- if rule != None %}
 rule_{{ name }}_present:
