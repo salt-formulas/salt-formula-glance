@@ -56,7 +56,7 @@ def _find_image(name, profile=None):
     if type(images) is dict and len(images) == 1 and 'images' in images:
         images = images['images']
 
-    images_list = images.values() if type(images) is dict else images
+    images_list = list(images.values()) if type(images) is dict else images
 
     if len(images_list) == 0:
         return None, 'No image with name "{0}"'.format(name)

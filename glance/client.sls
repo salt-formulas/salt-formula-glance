@@ -5,9 +5,9 @@ glance_client_packages:
   pkg.installed:
   - names: {{ client.pkgs }}
 
-{%- for identity_name, identity in client.identity.iteritems() %}
+{%- for identity_name, identity in client.identity.items() %}
 
-{%- for image_name, image in identity.image.iteritems() %}
+{%- for image_name, image in identity.image.items() %}
 
 glance_openstack_image_{{ image_name }}:
   glanceng.image_import:
