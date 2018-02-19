@@ -17,14 +17,18 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=cluster
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=cluster
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-ceph
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-ceph
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single-barbican
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single-barbican
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=single
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=single
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=cluster
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-ceph
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-barbican
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=cluster
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-ceph
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-barbican
+    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=cluster
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=single-ceph
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=single-barbican
+#    - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=single
 
 before_script:
   - set -o pipefail
