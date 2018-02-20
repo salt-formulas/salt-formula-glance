@@ -69,15 +69,6 @@ try:
 except ImportError:
     pass
 
-# Workaround, as the Glance API v2 requires you to
-# already have a keystone session token
-HAS_KEYSTONE = False
-try:
-    from keystoneclient.v2_0 import client as kstone
-    HAS_KEYSTONE = True
-except ImportError:
-    pass
-
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -91,9 +82,6 @@ def __virtual__():
     if not HAS_GLANCE:
         return False, ("The glance execution module cannot be loaded: "
                        "the glanceclient python library is not available.")
-    if not HAS_KEYSTONE:
-        return False, ("The keystone execution module cannot be loaded: "
-                       "the keystoneclient python library is not available.")
     return True
 
 
@@ -109,76 +97,11 @@ def _auth(profile=None, api_version=2, **connection_args):
     Only intended to be used within glance-enabled modules
     '''
 
-    if profile:
-        prefix = profile + ":keystone."
-    else:
-        prefix = "keystone."
-
-    def get(key, default=None):
-        '''
-        Checks connection_args, then salt-minion config,
-        falls back to specified default value.
-        '''
-        return connection_args.get('connection_' + key,
-            __salt__['config.get'](prefix + key, default))
-
-    user = get('user', 'admin')
-    password = get('password', None)
-    tenant = get('tenant', 'admin')
-    tenant_id = get('tenant_id')
-    auth_url = get('auth_url', 'http://127.0.0.1:35357/v2.0')
-    insecure = get('insecure', False)
-    admin_token = get('token')
-    region = get('region')
-    ks_endpoint = get('endpoint', 'http://127.0.0.1:9292/')
-    g_endpoint_url = __salt__['keystone.endpoint_get']('glance', profile)
-    # The trailing 'v2' causes URLs like thise one:
-    # http://127.0.0.1:9292/v2/v1/images
-    g_endpoint_url = re.sub('/v2', '', g_endpoint_url['internalurl'])
-
-    if admin_token and api_version != 1 and not password:
-        # If we had a password we could just
-        # ignore the admin-token and move on...
-        raise SaltInvocationError('Only can use keystone admin token '
-                                  'with Glance API v1')
-    elif password:
-        # Can't use the admin-token anyway
-        kwargs = {'username': user,
-                  'password': password,
-                  'tenant_id': tenant_id,
-                  'auth_url': auth_url,
-                  'endpoint_url': g_endpoint_url,
-                  'region_name': region,
-                  'tenant_name': tenant}
-        # 'insecure' keyword not supported by all v2.0 keystone clients
-        #   this ensures it's only passed in when defined
-        if insecure:
-            kwargs['insecure'] = True
-    elif api_version == 1 and admin_token:
-        kwargs = {'token': admin_token,
-                  'auth_url': auth_url,
-                  'endpoint_url': g_endpoint_url}
-    else:
-        raise SaltInvocationError('No credentials to authenticate with.')
-
-    if HAS_KEYSTONE:
-        log.debug('Calling keystoneclient.v2_0.client.Client(' +
-            '{0}, **{1})'.format(ks_endpoint, kwargs))
-        keystone = kstone.Client(**kwargs)
-        kwargs['token'] = keystone.get_token(keystone.session)
-        # This doesn't realy prevent the password to show up
-        # in the minion log as keystoneclient.session is
-        # logging it anyway when in debug-mode
-        kwargs.pop('password')
-        log.debug('Calling glanceclient.client.Client(' +
-            '{0}, {1}, **{2})'.format(api_version,
-                g_endpoint_url, kwargs))
-        # may raise exc.HTTPUnauthorized, exc.HTTPNotFound
-        # but we deal with those elsewhere
-        return client.Client(api_version, g_endpoint_url, **kwargs)
-    else:
-        raise NotImplementedError(
-            "Can't retrieve a auth_token without keystone")
+    kstone = __salt__['keystoneng.auth'](profile, **connection_args)
+    endpoint_type = connection_args.get('connection_endpoint_type', 'internal')
+    g_endpoint = __salt__['keystoneng.endpoint_get']('glance', profile=profile, interface=endpoint_type)
+    glance_client = client.Client(api_version, session=kstone.session, endpoint=g_endpoint.get('url'))
+    return glance_client
 
 
 def _validate_image_params(visibility=None, container_format='bare',
