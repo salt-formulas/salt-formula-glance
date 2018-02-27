@@ -26,6 +26,15 @@ glance:
       password: password
       region: RegionOne
       tenant: service
+    logging:
+      log_appender: false
+      log_handlers:
+        watchedfile:
+          enabled: true
+        fluentd:
+          enabled: false
+        ossyslog:
+          enabled: false
     message_queue:
       engine: rabbitmq
       members:
