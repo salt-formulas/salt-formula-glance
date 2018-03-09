@@ -98,8 +98,7 @@ def _auth(profile=None, api_version=2, **connection_args):
     '''
 
     kstone = __salt__['keystoneng.auth'](profile, **connection_args)
-    endpoint_type = connection_args.get('connection_endpoint_type', 'internal')
-    g_endpoint = __salt__['keystoneng.endpoint_get']('glance', profile=profile, interface=endpoint_type)
+    g_endpoint = __salt__['keystoneng.endpoint_get']('glance', profile=profile)
     glance_client = client.Client(api_version, session=kstone.session, endpoint=g_endpoint.get('url'))
     return glance_client
 
