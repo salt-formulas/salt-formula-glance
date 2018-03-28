@@ -46,7 +46,7 @@ def _find_image(name, profile=None):
         - False, 'Found more than one image with given name'
     '''
     try:
-        images = __salt__['glance.image_list'](name=name, profile=profile)
+        images = __salt__['glanceng.image_list'](name=name, profile=profile)
     except kstone_Unauthorized:
         return False, 'keystoneclient: Unauthorized'
     except glance_Unauthorized:
@@ -126,7 +126,7 @@ def image_present(name, profile=None, visibility='public', protected=None,
             ret['comment'] = 'glance.image_present would ' \
                 'create an image from {0}'.format(location)
             return ret
-        image = __salt__['glance.image_create'](name=name, profile=profile,
+        image = __salt__['glanceng.image_create'](name=name, profile=profile,
             protected=protected, visibility=visibility,
             location=location, disk_format=disk_format)
         log.debug('Created new image:\n{0}'.format(image))
@@ -184,7 +184,7 @@ def image_present(name, profile=None, visibility='public', protected=None,
         if image['visibility'] != visibility:
             old_value = image['visibility']
             if not __opts__['test']:
-                image = __salt__['glance.image_update'](
+                image = __salt__['glanceng.image_update'](
                     id=image['id'], visibility=visibility)
             # Check if image_update() worked:
             if image['visibility'] != visibility:
@@ -222,7 +222,7 @@ def image_present(name, profile=None, visibility='public', protected=None,
         if image['status'] == 'active':
             if 'checksum' not in image:
                 # Refresh our info about the image
-                image = __salt__['glance.image_show'](image['id'])
+                image = __salt__['glanceng.image_show'](image['id'])
             if 'checksum' not in image:
                 if not __opts__['test']:
                     ret['result'] = False
@@ -376,7 +376,7 @@ def image_import(name, profile=None, visibility='public', protected=False,
                 if image['status'] == 'active':
                     if 'checksum' not in image:
                         # Refresh our info about the image
-                        image = __salt__['glance.image_show'](image['id'])
+                        image = __salt__['glanceng.image_show'](image['id'])
                     if 'checksum' not in image:
                         if not __opts__['test']:
                             ret['result'] = False
