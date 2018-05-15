@@ -59,5 +59,6 @@
 {% set monitoring = salt['grains.filter_by']({
     'default': {
         'error_log_rate': 0.2,
+        'endpoint_failed_major_threshold': 0.5,
     },
 }, grain='os_family', merge=salt['pillar.get']('glance:monitoring')) %}

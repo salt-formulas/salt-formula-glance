@@ -1,51 +1,74 @@
 {%- if pillar.glance.server is defined and pillar.glance.server.get('enabled') %}
 {%- from "glance/map.jinja" import monitoring with context %}
+{%- set major_threshold = monitoring.endpoint_failed_major_threshold|float %}
 {% raw %}
 server:
   alert:
-    GlanceAPIDown:
+    GlanceAPIOutage:
       if: >-
-        max(openstack_api_check_status{service=~"glance.*"}) by (service) == 0
-      for: 2m
+        openstack_api_check_status{name="glance"} == 0
       labels:
-        severity: down
-        service: "{{ $labels.service }}"
+        severity: critical
+        service: glance
       annotations:
-        summary: "Endpoint check for '{{ $labels.service }}' is down"
+        summary: "Glance API outage"
         description: >-
-            Endpoint check for '{{ $labels.service }}' is down for 2 minutes
-    GlanceRegistryServiceDown:
+          Glance API is not accessible for the Glance endpoint in the OpenStack service catalog.
+    GlareAPIOutage:
       if: >-
-        http_response_status{service=~"glance-registry"} == 0
-      for: 2m
+        openstack_api_check_status{name="glare"} == 0
       labels:
-        severity: down
-        service: "{{ $labels.service }}"
+        severity: critical
+        service: glance
       annotations:
-        summary: "HTTP check for '{{ $labels.service }}' down"
+        summary: "Glare API outage"
         description: >-
-            The HTTP check for '{{ $labels.service }}' is down on {{ $labels.host }} for 2 minutes.
+          Glare API is not accessible for the Glare endpoint in the OpenStack service catalog.
     GlanceAPIServiceDown:
       if: >-
-        http_response_status{service=~"glance-api"} == 0
+        http_response_status{name=~"glance.*"} == 0
       for: 2m
       labels:
-        severity: down
-        service: "{{ $labels.service }}"
+        severity: minor
+        service: glance
       annotations:
-        summary: "HTTP check for '{{ $labels.service }}' down"
+        summary: "Host {{ $labels.name }} endpoint is not accesible"
         description: >-
-            The HTTP check for '{{ $labels.service }}' is down on {{ $labels.host }} for 2 minutes.
-    GlanceErrorLogsTooHigh:
+          The host {{ $labels.name }} endpoint on the {{ $labels.host }} node is not accessible for at least 2 minutes.
 {%- endraw %}
+    GlanceAPIServiceDownMajor:
+      if: >-
+        count(http_response_status{name=~"glance.*"} == 0) by (name) >= count(http_response_status{name=~"glance.*"}) by (name) * {{ major_threshold }}
+      for: 2m
+      labels:
+        severity: major
+        service: glance
+      annotations:
+        summary: "{{major_threshold * 100}}% of host {% raw %}{{ $labels.name }} endpoints are not accesible"
+        description: >-
+          {{ $value }} host {{ $labels.name }} endpoints are not accessible for at least 2 minutes (at least {% endraw %}{{major_threshold * 100}}{% raw %}%).
+    GlanceAPIServiceOutage:
+      if: >-
+        count(http_response_status{name=~"glance.*"} == 0) by (name) == count(http_response_status{name=~"glance.*"}) by (name)
+      for: 2m
+      labels:
+        severity: critical
+        service: glance
+      annotations:
+        summary: "Host {{ $labels.name }} outage"
+        description: >-
+          All available host {{ $labels.name }} endpoints are not accessible for at least 2 minutes.
+{%- endraw %}
+    GlanceErrorLogsTooHigh:
       {%- set log_threshold = monitoring.error_log_rate|float %}
       if: >-
         sum(rate(log_messages{service="glance",level=~"(?i:(error|emergency|fatal))"}[5m])) without (level) > {{ log_threshold }}
 {%- raw %}
       labels:
         severity: warning
-        service: "{{ $labels.service }}"
+        service: glance
       annotations:
-        summary: 'Too many errors in {{ $labels.service }} logs'
-        description: 'The rate of errors in {{ $labels.service }} logs over the last 5 minutes is too high on node {{ $labels.host }} (current value={{ $value }}, threshold={%- endraw %}{{ log_threshold }}).'
+        summary: "High number of errors in Glance logs"
+        description: "The average per-second rate of errors in Glance logs on the {{ $labels.host }} node is {{ $value }} (as measured over the last 5 minutes)."
+{%- endraw %}
 {%- endif %}
