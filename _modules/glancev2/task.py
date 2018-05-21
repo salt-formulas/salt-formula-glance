@@ -7,7 +7,7 @@ from glancev2.common import send
 
 @send('post')
 def task_create(task_type, task_input, **kwargs):
-    url = '/v2/tasks'
+    url = '/tasks'
     json = {
         'type': task_type,
         'input': task_input
@@ -17,11 +17,11 @@ def task_create(task_type, task_input, **kwargs):
 
 @send('get')
 def task_list(**kwargs):
-    url = '/v2/tasks?{}'.format(urlencode(kwargs))
+    url = '/tasks?{}'.format(urlencode(kwargs))
     return url, {}
 
 
 @send('get')
 def task_show(task_id, **kwargs):
-    url = '/v2/tasks/{}'.format(task_id)
+    url = '/tasks/{}'.format(task_id)
     return url, {}

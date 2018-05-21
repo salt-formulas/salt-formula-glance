@@ -135,8 +135,11 @@ def image_present(name, cloud_name, location, image_properties,
                                       + " checksum couldn't be verified, " \
                                         "since status is not active"
             return resp
-        if 'MultipleResourcesFound' in repr(e):
+        elif 'MultipleResourcesFound' in repr(e):
             return _find_failed(name, 'image')
+        else:
+            raise
+
     to_change = []
     for prop in image_properties:
         path = prop.replace('~', '~0').replace('/', '~1')

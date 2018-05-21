@@ -17,7 +17,14 @@
         },
         'glance_uid': 302,
         'glance_gid': 302,
+        'amqp': {
+          'default_notification_exchange': 'glance'
+        },
+        'policy': {
+          'policy_file': '/etc/glance/policy.json'
+        },
         'logging': {
+          'log_file': '/var/log/glance/api.log',
           'log_appender': false,
           'log_handlers': {
             'watchedfile': {
@@ -36,7 +43,14 @@
         },
         'glance_uid': 302,
         'glance_gid': 302,
+        'amqp': {
+          'default_notification_exchange': 'glance'
+        },
+        'policy': {
+          'policy_file': '/etc/glance/policy.json'
+        },
         'logging': {
+          'log_file': '/var/log/glance/api.log',
           'log_appender': false,
           'log_handlers': {
             'watchedfile': {

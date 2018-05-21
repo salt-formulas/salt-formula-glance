@@ -1,0 +1,1096 @@
+{%- from "glance/map.jinja" import server with context %}
+[DEFAULT]
+
+#
+# From glance.registry
+#
+
+#
+# Set the image owner to tenant or the authenticated user.
+#
+# Assign a boolean value to determine the owner of an image. When set
+# to
+# True, the owner of the image is the tenant. When set to False, the
+# owner of the image will be the authenticated user issuing the
+# request.
+# Setting it to False makes the image private to the associated user
+# and
+# sharing with other users within the same tenant (or "project")
+# requires explicit image sharing via image membership.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * None
+#
+#  (boolean value)
+#owner_is_tenant = true
+
+#
+# Role used to identify an authenticated user as administrator.
+#
+# Provide a string value representing a Keystone role to identify an
+# administrative user. Users with this role will be granted
+# administrative privileges. The default value for this option is
+# 'admin'.
+#
+# Possible values:
+#     * A string value which is a valid Keystone role
+#
+# Related options:
+#     * None
+#
+#  (string value)
+#admin_role = admin
+
+#
+# Allow limited access to unauthenticated users.
+#
+# Assign a boolean to determine API access for unathenticated
+# users. When set to False, the API cannot be accessed by
+# unauthenticated users. When set to True, unauthenticated users can
+# access the API with read-only privileges. This however only applies
+# when using ContextMiddleware.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * None
+#
+#  (boolean value)
+#allow_anonymous_access = false
+
+#
+# Limit the request ID length.
+#
+# Provide  an integer value to limit the length of the request ID to
+# the specified length. The default value is 64. Users can change this
+# to any ineteger value between 0 and 16384 however keeping in mind
+# that
+# a larger value may flood the logs.
+#
+# Possible values:
+#     * Integer value between 0 and 16384
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+# Minimum value: 0
+#max_request_id_length = 64
+
+#
+# Allow users to add additional/custom properties to images.
+#
+# Glance defines a standard set of properties (in its schema) that
+# appear on every image. These properties are also known as
+# ``base properties``. In addition to these properties, Glance
+# allows users to add custom properties to images. These are known
+# as ``additional properties``.
+#
+# By default, this configuration option is set to ``True`` and users
+# are allowed to add additional properties. The number of additional
+# properties that can be added to an image can be controlled via
+# ``image_property_quota`` configuration option.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * image_property_quota
+#
+#  (boolean value)
+#allow_additional_image_properties = true
+
+#
+# Maximum number of image members per image.
+#
+# This limits the maximum of users an image can be shared with. Any
+# negative
+# value is interpreted as unlimited.
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+#image_member_quota = 128
+
+#
+# Maximum number of properties allowed on an image.
+#
+# This enforces an upper limit on the number of additional properties
+# an image
+# can have. Any negative value is interpreted as unlimited.
+#
+# NOTE: This won't have any impact if additional properties are
+# disabled. Please
+# refer to ``allow_additional_image_properties``.
+#
+# Related options:
+#     * ``allow_additional_image_properties``
+#
+#  (integer value)
+#image_property_quota = 128
+
+#
+# Maximum number of tags allowed on an image.
+#
+# Any negative value is interpreted as unlimited.
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+#image_tag_quota = 128
+
+#
+# Maximum number of locations allowed on an image.
+#
+# Any negative value is interpreted as unlimited.
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+#image_location_quota = 10
+
+# DEPRECATED:
+# Python module path of data access API.
+#
+# Specifies the path to the API to use for accessing the data model.
+# This option determines how the image catalog data will be accessed.
+#
+# Possible values:
+#     * glance.db.sqlalchemy.api
+#     * glance.db.registry.api
+#     * glance.db.simple.api
+#
+# If this option is set to ``glance.db.sqlalchemy.api`` then the image
+# catalog data is stored in and read from the database via the
+# SQLAlchemy Core and ORM APIs.
+#
+# Setting this option to ``glance.db.registry.api`` will force all
+# database access requests to be routed through the Registry service.
+# This avoids data access from the Glance API nodes for an added layer
+# of security, scalability and manageability.
+#
+# NOTE: In v2 OpenStack Images API, the registry service is optional.
+# In order to use the Registry API in v2, the option
+# ``enable_v2_registry`` must be set to ``True``.
+#
+# Finally, when this configuration option is set to
+# ``glance.db.simple.api``, image catalog data is stored in and read
+# from an in-memory data structure. This is primarily used for
+# testing.
+#
+# Related options:
+#     * enable_v2_api
+#     * enable_v2_registry
+#
+#  (string value)
+# This option is deprecated for removal since Queens.
+# Its value may be silently ignored in the future.
+# Reason:
+# Glance registry service is deprecated for removal.
+#
+# More information can be found from the spec:
+# http://specs.openstack.org/openstack/glance-
+# specs/specs/queens/approved/glance/deprecate-registry.html
+#data_api = glance.db.sqlalchemy.api
+
+#
+# The default number of results to return for a request.
+#
+# Responses to certain API requests, like list images, may return
+# multiple items. The number of results returned can be explicitly
+# controlled by specifying the ``limit`` parameter in the API request.
+# However, if a ``limit`` parameter is not specified, this
+# configuration value will be used as the default number of results to
+# be returned for any API request.
+#
+# NOTES:
+#     * The value of this configuration option may not be greater than
+#       the value specified by ``api_limit_max``.
+#     * Setting this to a very large value may slow down database
+#       queries and increase response times. Setting this to a
+#       very low value may result in poor user experience.
+#
+# Possible values:
+#     * Any positive integer
+#
+# Related options:
+#     * api_limit_max
+#
+#  (integer value)
+# Minimum value: 1
+#limit_param_default = 25
+{%- if server.limit_param_default is defined %}
+limit_param_default = {{ server.limit_param_default }}
+{%- endif %}
+
+#
+# Maximum number of results that could be returned by a request.
+#
+# As described in the help text of ``limit_param_default``, some
+# requests may return multiple results. The number of results to be
+# returned are governed either by the ``limit`` parameter in the
+# request or the ``limit_param_default`` configuration option.
+# The value in either case, can't be greater than the absolute maximum
+# defined by this configuration option. Anything greater than this
+# value is trimmed down to the maximum value defined here.
+#
+# NOTE: Setting this to a very large value may slow down database
+#       queries and increase response times. Setting this to a
+#       very low value may result in poor user experience.
+#
+# Possible values:
+#     * Any positive integer
+#
+# Related options:
+#     * limit_param_default
+#
+#  (integer value)
+# Minimum value: 1
+#api_limit_max = 1000
+{%- if server.api_limit_max is defined %}
+api_limit_max = {{ server.api_limit_max }}
+{%- endif %}
+
+#
+# Show direct image location when returning an image.
+#
+# This configuration option indicates whether to show the direct image
+# location when returning image details to the user. The direct image
+# location is where the image data is stored in backend storage. This
+# image location is shown under the image property ``direct_url``.
+#
+# When multiple image locations exist for an image, the best location
+# is displayed based on the location strategy indicated by the
+# configuration option ``location_strategy``.
+#
+# NOTES:
+#     * Revealing image locations can present a GRAVE SECURITY RISK as
+#       image locations can sometimes include credentials. Hence, this
+#       is set to ``False`` by default. Set this to ``True`` with
+#       EXTREME CAUTION and ONLY IF you know what you are doing!
+#     * If an operator wishes to avoid showing any image location(s)
+#       to the user, then both this option and
+#       ``show_multiple_locations`` MUST be set to ``False``.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * show_multiple_locations
+#     * location_strategy
+#
+#  (boolean value)
+#show_image_direct_url = false
+
+# DEPRECATED:
+# Show all image locations when returning an image.
+#
+# This configuration option indicates whether to show all the image
+# locations when returning image details to the user. When multiple
+# image locations exist for an image, the locations are ordered based
+# on the location strategy indicated by the configuration opt
+# ``location_strategy``. The image locations are shown under the
+# image property ``locations``.
+#
+# NOTES:
+#     * Revealing image locations can present a GRAVE SECURITY RISK as
+#       image locations can sometimes include credentials. Hence, this
+#       is set to ``False`` by default. Set this to ``True`` with
+#       EXTREME CAUTION and ONLY IF you know what you are doing!
+#     * If an operator wishes to avoid showing any image location(s)
+#       to the user, then both this option and
+#       ``show_image_direct_url`` MUST be set to ``False``.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * show_image_direct_url
+#     * location_strategy
+#
+#  (boolean value)
+# This option is deprecated for removal since Newton.
+# Its value may be silently ignored in the future.
+# Reason: This option will be removed in the Pike release or later
+# because the same functionality can be achieved with greater
+# granularity by using policies. Please see the Newton release notes
+# for more information.
+#show_multiple_locations = false
+
+#
+# Maximum size of image a user can upload in bytes.
+#
+# An image upload greater than the size mentioned here would result
+# in an image creation failure. This configuration option defaults to
+# 1099511627776 bytes (1 TiB).
+#
+# NOTES:
+#     * This value should only be increased after careful
+#       consideration and must be set less than or equal to
+#       8 EiB (9223372036854775808).
+#     * This value must be set with careful consideration of the
+#       backend storage capacity. Setting this to a very low value
+#       may result in a large number of image failures. And, setting
+#       this to a very large value may result in faster consumption
+#       of storage. Hence, this must be set according to the nature of
+#       images created and storage capacity available.
+#
+# Possible values:
+#     * Any positive number less than or equal to 9223372036854775808
+#
+#  (integer value)
+# Minimum value: 1
+# Maximum value: 9223372036854775808
+#image_size_cap = 1099511627776
+
+#
+# Maximum amount of image storage per tenant.
+#
+# This enforces an upper limit on the cumulative storage consumed by
+# all images
+# of a tenant across all stores. This is a per-tenant limit.
+#
+# The default unit for this configuration option is Bytes. However,
+# storage
+# units can be specified using case-sensitive literals ``B``, ``KB``,
+# ``MB``,
+# ``GB`` and ``TB`` representing Bytes, KiloBytes, MegaBytes,
+# GigaBytes and
+# TeraBytes respectively. Note that there should not be any space
+# between the
+# value and unit. Value ``0`` signifies no quota enforcement. Negative
+# values
+# are invalid and result in errors.
+#
+# Possible values:
+#     * A string that is a valid concatenation of a non-negative
+# integer
+#       representing the storage value and an optional string literal
+#       representing storage units as mentioned above.
+#
+# Related options:
+#     * None
+#
+#  (string value)
+#user_storage_quota = 0
+
+#
+# Deploy the v1 OpenStack Images API.
+#
+# When this option is set to ``True``, Glance service will respond to
+# requests on registered endpoints conforming to the v1 OpenStack
+# Images API.
+#
+# NOTES:
+#     * If this option is enabled, then ``enable_v1_registry`` must
+#       also be set to ``True`` to enable mandatory usage of Registry
+#       service with v1 API.
+#
+#     * If this option is disabled, then the ``enable_v1_registry``
+#       option, which is enabled by default, is also recommended
+#       to be disabled.
+#
+#     * This option is separate from ``enable_v2_api``, both v1 and v2
+#       OpenStack Images API can be deployed independent of each
+#       other.
+#
+#     * If deploying only the v2 Images API, this option, which is
+#       enabled by default, should be disabled.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * enable_v1_registry
+#     * enable_v2_api
+#
+#  (boolean value)
+#enable_v1_api = true
+
+#
+# Deploy the v2 OpenStack Images API.
+#
+# When this option is set to ``True``, Glance service will respond
+# to requests on registered endpoints conforming to the v2 OpenStack
+# Images API.
+#
+# NOTES:
+#     * If this option is disabled, then the ``enable_v2_registry``
+#       option, which is enabled by default, is also recommended
+#       to be disabled.
+#
+#     * This option is separate from ``enable_v1_api``, both v1 and v2
+#       OpenStack Images API can be deployed independent of each
+#       other.
+#
+#     * If deploying only the v1 Images API, this option, which is
+#       enabled by default, should be disabled.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * enable_v2_registry
+#     * enable_v1_api
+#
+#  (boolean value)
+#enable_v2_api = true
+
+#
+# Deploy the v1 API Registry service.
+#
+# When this option is set to ``True``, the Registry service
+# will be enabled in Glance for v1 API requests.
+#
+# NOTES:
+#     * Use of Registry is mandatory in v1 API, so this option must
+#       be set to ``True`` if the ``enable_v1_api`` option is enabled.
+#
+#     * If deploying only the v2 OpenStack Images API, this option,
+#       which is enabled by default, should be disabled.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * enable_v1_api
+#
+#  (boolean value)
+#enable_v1_registry = true
+
+# DEPRECATED:
+# Deploy the v2 API Registry service.
+#
+# When this option is set to ``True``, the Registry service
+# will be enabled in Glance for v2 API requests.
+#
+# NOTES:
+#     * Use of Registry is optional in v2 API, so this option
+#       must only be enabled if both ``enable_v2_api`` is set to
+#       ``True`` and the ``data_api`` option is set to
+#       ``glance.db.registry.api``.
+#
+#     * If deploying only the v1 OpenStack Images API, this option,
+#       which is enabled by default, should be disabled.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * enable_v2_api
+#     * data_api
+#
+#  (boolean value)
+# This option is deprecated for removal since Queens.
+# Its value may be silently ignored in the future.
+# Reason:
+# Glance registry service is deprecated for removal.
+#
+# More information can be found from the spec:
+# http://specs.openstack.org/openstack/glance-
+# specs/specs/queens/approved/glance/deprecate-registry.html
+#enable_v2_registry = true
+
+#
+# Host address of the pydev server.
+#
+# Provide a string value representing the hostname or IP of the
+# pydev server to use for debugging. The pydev server listens for
+# debug connections on this address, facilitating remote debugging
+# in Glance.
+#
+# Possible values:
+#     * Valid hostname
+#     * Valid IP address
+#
+# Related options:
+#     * None
+#
+#  (unknown value)
+#pydev_worker_debug_host = localhost
+
+#
+# Port number that the pydev server will listen on.
+#
+# Provide a port number to bind the pydev server to. The pydev
+# process accepts debug connections on this port and facilitates
+# remote debugging in Glance.
+#
+# Possible values:
+#     * A valid port number
+#
+# Related options:
+#     * None
+#
+#  (port value)
+# Minimum value: 0
+# Maximum value: 65535
+#pydev_worker_debug_port = 5678
+
+#
+# AES key for encrypting store location metadata.
+#
+# Provide a string value representing the AES cipher to use for
+# encrypting Glance store metadata.
+#
+# NOTE: The AES key to use must be set to a random string of length
+# 16, 24 or 32 bytes.
+#
+# Possible values:
+#     * String value representing a valid AES key
+#
+# Related options:
+#     * None
+#
+#  (string value)
+#metadata_encryption_key = <None>
+
+#
+# Digest algorithm to use for digital signature.
+#
+# Provide a string value representing the digest algorithm to
+# use for generating digital signatures. By default, ``sha256``
+# is used.
+#
+# To get a list of the available algorithms supported by the version
+# of OpenSSL on your platform, run the command:
+# ``openssl list-message-digest-algorithms``.
+# Examples are 'sha1', 'sha256', and 'sha512'.
+#
+# NOTE: ``digest_algorithm`` is not related to Glance's image signing
+# and verification. It is only used to sign the universally unique
+# identifier (UUID) as a part of the certificate file and key file
+# validation.
+#
+# Possible values:
+#     * An OpenSSL message digest algorithm identifier
+#
+# Relation options:
+#     * None
+#
+#  (string value)
+#digest_algorithm = sha256
+
+#
+# The URL provides location where the temporary data will be stored
+#
+# This option is for Glance internal use only. Glance will save the
+# image data uploaded by the user to 'staging' endpoint during the
+# image import process.
+#
+# This option does not change the 'staging' API endpoint by any means.
+#
+# NOTE: It is discouraged to use same path as [task]/work_dir
+#
+# NOTE: 'file://<absolute-directory-path>' is the only option
+# api_image_import flow will support for now.
+#
+# NOTE: The staging path must be on shared filesystem available to all
+# Glance API nodes.
+#
+# Possible values:
+#     * String starting with 'file://' followed by absolute FS path
+#
+# Related options:
+#     * [task]/work_dir
+#     * [DEFAULT]/enable_image_import (*deprecated*)
+#
+#  (string value)
+#node_staging_uri = file:///tmp/staging/
+
+# DEPRECATED:
+# Enables the Image Import workflow introduced in Pike
+#
+# As '[DEFAULT]/node_staging_uri' is required for the Image
+# Import, it's disabled per default in Pike, enabled per
+# default in Queens and removed in Rocky. This allows Glance to
+# operate with previous version configs upon upgrade.
+#
+# Setting this option to False will disable the endpoints related
+# to Image Import Refactoring work.
+#
+# Related options:
+#     * [DEFAULT]/node_staging_uri (boolean value)
+# This option is deprecated for removal since Pike.
+# Its value may be silently ignored in the future.
+# Reason:
+# This option is deprecated for removal in Rocky.
+#
+# It was introduced to make sure that the API is not enabled
+# before the '[DEFAULT]/node_staging_uri' is defined and is
+# long term redundant.
+#enable_image_import = true
+
+#
+# List of enabled Image Import Methods
+#
+# Both 'glance-direct' and 'web-download' are enabled by default.
+#
+# Related options:
+#     * [DEFAULT]/node_staging_uri
+#     * [DEFAULT]/enable_image_import (list value)
+#enabled_import_methods = glance-direct,web-download
+
+#
+# IP address to bind the glance servers to.
+#
+# Provide an IP address to bind the glance server to. The default
+# value is ``0.0.0.0``.
+#
+# Edit this option to enable the server to listen on one particular
+# IP address on the network card. This facilitates selection of a
+# particular network interface for the server.
+#
+# Possible values:
+#     * A valid IPv4 address
+#     * A valid IPv6 address
+#
+# Related options:
+#     * None
+#
+#  (unknown value)
+#bind_host = 0.0.0.0
+bind_host = {{ server.bind.address }}
+
+#
+# Port number on which the server will listen.
+#
+# Provide a valid port number to bind the server's socket to. This
+# port is then set to identify processes and forward network messages
+# that arrive at the server. The default bind_port value for the API
+# server is 9292 and for the registry server is 9191.
+#
+# Possible values:
+#     * A valid port number (0 to 65535)
+#
+# Related options:
+#     * None
+#
+#  (port value)
+# Minimum value: 0
+# Maximum value: 65535
+#bind_port = <None>
+bind_port = {{ server.registry.port }}
+
+#
+# Set the number of incoming connection requests.
+#
+# Provide a positive integer value to limit the number of requests in
+# the backlog queue. The default queue size is 4096.
+#
+# An incoming connection to a TCP listener socket is queued before a
+# connection can be established with the server. Setting the backlog
+# for a TCP socket ensures a limited queue size for incoming traffic.
+#
+# Possible values:
+#     * Positive integer
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+# Minimum value: 1
+#backlog = 4096
+
+#
+# Set the wait time before a connection recheck.
+#
+# Provide a positive integer value representing time in seconds which
+# is set as the idle wait time before a TCP keep alive packet can be
+# sent to the host. The default value is 600 seconds.
+#
+# Setting ``tcp_keepidle`` helps verify at regular intervals that a
+# connection is intact and prevents frequent TCP connection
+# reestablishment.
+#
+# Possible values:
+#     * Positive integer value representing time in seconds
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+# Minimum value: 1
+#tcp_keepidle = 600
+
+#
+# Absolute path to the CA file.
+#
+# Provide a string value representing a valid absolute path to
+# the Certificate Authority file to use for client authentication.
+#
+# A CA file typically contains necessary trusted certificates to
+# use for the client authentication. This is essential to ensure
+# that a secure connection is established to the server via the
+# internet.
+#
+# Possible values:
+#     * Valid absolute path to the CA file
+#
+# Related options:
+#     * None
+#
+#  (string value)
+#ca_file = /etc/ssl/cafile
+
+#
+# Absolute path to the certificate file.
+#
+# Provide a string value representing a valid absolute path to the
+# certificate file which is required to start the API service
+# securely.
+#
+# A certificate file typically is a public key container and includes
+# the server's public key, server name, server information and the
+# signature which was a result of the verification process using the
+# CA certificate. This is required for a secure connection
+# establishment.
+#
+# Possible values:
+#     * Valid absolute path to the certificate file
+#
+# Related options:
+#     * None
+#
+#  (string value)
+#cert_file = /etc/ssl/certs
+
+#
+# Absolute path to a private key file.
+#
+# Provide a string value representing a valid absolute path to a
+# private key file which is required to establish the client-server
+# connection.
+#
+# Possible values:
+#     * Absolute path to the private key file
+#
+# Related options:
+#     * None
+#
+#  (string value)
+#key_file = /etc/ssl/key/key-file.pem
+
+# DEPRECATED: The HTTP header used to determine the scheme for the
+# original request, even if it was removed by an SSL terminating
+# proxy. Typical value is "HTTP_X_FORWARDED_PROTO". (string value)
+# This option is deprecated for removal.
+# Its value may be silently ignored in the future.
+# Reason: Use the http_proxy_to_wsgi middleware instead.
+#secure_proxy_ssl_header = <None>
+
+#
+# Number of Glance worker processes to start.
+#
+# Provide a non-negative integer value to set the number of child
+# process workers to service requests. By default, the number of CPUs
+# available is set as the value for ``workers`` limited to 8. For
+# example if the processor count is 6, 6 workers will be used, if the
+# processor count is 24 only 8 workers will be used. The limit will
+# only
+# apply to the default value, if 24 workers is configured, 24 is used.
+#
+# Each worker process is made to listen on the port set in the
+# configuration file and contains a greenthread pool of size 1000.
+#
+# NOTE: Setting the number of workers to zero, triggers the creation
+# of a single API process with a greenthread pool of size 1000.
+#
+# Possible values:
+#     * 0
+#     * Positive integer value (typically equal to the number of CPUs)
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+# Minimum value: 0
+#workers = <None>
+workers = {{ server.workers }}
+
+#
+# Maximum line size of message headers.
+#
+# Provide an integer value representing a length to limit the size of
+# message headers. The default value is 16384.
+#
+# NOTE: ``max_header_line`` may need to be increased when using large
+# tokens (typically those generated by the Keystone v3 API with big
+# service catalogs). However, it is to be kept in mind that larger
+# values for ``max_header_line`` would flood the logs.
+#
+# Setting ``max_header_line`` to 0 sets no limit for the line size of
+# message headers.
+#
+# Possible values:
+#     * 0
+#     * Positive integer
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+# Minimum value: 0
+#max_header_line = 16384
+
+#
+# Set keep alive option for HTTP over TCP.
+#
+# Provide a boolean value to determine sending of keep alive packets.
+# If set to ``False``, the server returns the header
+# "Connection: close". If set to ``True``, the server returns a
+# "Connection: Keep-Alive" in its responses. This enables retention of
+# the same TCP connection for HTTP conversations instead of opening a
+# new one with each new request.
+#
+# This option must be set to ``False`` if the client socket connection
+# needs to be closed explicitly after the response is received and
+# read successfully by the client.
+#
+# Possible values:
+#     * True
+#     * False
+#
+# Related options:
+#     * None
+#
+#  (boolean value)
+#http_keepalive = true
+
+#
+# Timeout for client connections' socket operations.
+#
+# Provide a valid integer value representing time in seconds to set
+# the period of wait before an incoming connection can be closed. The
+# default value is 900 seconds.
+#
+# The value zero implies wait forever.
+#
+# Possible values:
+#     * Zero
+#     * Positive integer
+#
+# Related options:
+#     * None
+#
+#  (integer value)
+# Minimum value: 0
+#client_socket_timeout = 900
+
+{%- if server.logging is defined %}
+{%- set _data = server.logging %}
+{%- do _data.update({'log_file': '/var/log/glance/registry.log'}) %}
+{%- include "oslo_templates/files/queens/oslo/_log.conf" %}
+{%- endif %}
+
+[paste_deploy]
+
+#
+# From glance.registry
+#
+
+#
+# Deployment flavor to use in the server application pipeline.
+#
+# Provide a string value representing the appropriate deployment
+# flavor used in the server application pipleline. This is typically
+# the partial name of a pipeline in the paste configuration file with
+# the service name removed.
+#
+# For example, if your paste section name in the paste configuration
+# file is [pipeline:glance-api-keystone], set ``flavor`` to
+# ``keystone``.
+#
+# Possible values:
+#     * String value representing a partial pipeline name.
+#
+# Related Options:
+#     * config_file
+#
+#  (string value)
+{%- if server.get('flavor', 'keystone') %}
+flavor = {{ server.get('flavor', 'keystone') }}
+{%- endif %}
+
+#
+# Name of the paste configuration file.
+#
+# Provide a string value representing the name of the paste
+# configuration file to use for configuring piplelines for
+# server application deployments.
+#
+# NOTES:
+#     * Provide the name or the path relative to the glance directory
+#       for the paste configuration file and not the absolute path.
+#     * The sample paste configuration file shipped with Glance need
+#       not be edited in most cases as it comes with ready-made
+#       pipelines for all common deployment flavors.
+#
+# If no value is specified for this option, the ``paste.ini`` file
+# with the prefix of the corresponding Glance service's configuration
+# file name will be searched for in the known configuration
+# directories. (For example, if this option is missing from or has no
+# value set in ``glance-api.conf``, the service will look for a file
+# named ``glance-api-paste.ini``.) If the paste configuration file is
+# not found, the service will not start.
+#
+# Possible values:
+#     * A string value representing the name of the paste
+# configuration
+#       file.
+#
+# Related Options:
+#     * flavor
+#
+#  (string value)
+#config_file = glance-api-paste.ini
+
+
+[profiler]
+
+#
+# From glance.registry
+#
+
+#
+# Enables the profiling for all services on this node. Default value
+# is False
+# (fully disable the profiling feature).
+#
+# Possible values:
+#
+# * True: Enables the feature
+# * False: Disables the feature. The profiling cannot be started via
+# this project
+# operations. If the profiling is triggered by another project, this
+# project part
+# will be empty.
+#  (boolean value)
+# Deprecated group/name - [profiler]/profiler_enabled
+#enabled = false
+
+#
+# Enables SQL requests profiling in services. Default value is False
+# (SQL
+# requests won't be traced).
+#
+# Possible values:
+#
+# * True: Enables SQL requests profiling. Each SQL query will be part
+# of the
+# trace and can the be analyzed by how much time was spent for that.
+# * False: Disables SQL requests profiling. The spent time is only
+# shown on a
+# higher level of operations. Single SQL queries cannot be analyzed
+# this
+# way.
+#  (boolean value)
+#trace_sqlalchemy = false
+
+#
+# Secret key(s) to use for encrypting context data for performance
+# profiling.
+# This string value should have the following format:
+# <key1>[,<key2>,...<keyn>],
+# where each key is some random string. A user who triggers the
+# profiling via
+# the REST API has to set one of these keys in the headers of the REST
+# API call
+# to include profiling results of this node for this particular
+# project.
+#
+# Both "enabled" flag and "hmac_keys" config options should be set to
+# enable
+# profiling. Also, to generate correct profiling information across
+# all services
+# at least one key needs to be consistent between OpenStack projects.
+# This
+# ensures it can be used from client side to generate the trace,
+# containing
+# information from all possible resources. (string value)
+#hmac_keys = SECRET_KEY
+
+#
+# Connection string for a notifier backend. Default value is
+# messaging:// which
+# sets the notifier to oslo_messaging.
+#
+# Examples of possible values:
+#
+# * messaging://: use oslo_messaging driver for sending notifications.
+# * mongodb://127.0.0.1:27017 : use mongodb driver for sending
+# notifications.
+# * elasticsearch://127.0.0.1:9200 : use elasticsearch driver for
+# sending
+# notifications.
+#  (string value)
+#connection_string = messaging://
+
+#
+# Document type for notification indexing in elasticsearch.
+#  (string value)
+#es_doc_type = notification
+
+#
+# This parameter is a time value parameter (for example:
+# es_scroll_time=2m),
+# indicating for how long the nodes that participate in the search
+# will maintain
+# relevant resources in order to continue and support it.
+#  (string value)
+#es_scroll_time = 2m
+
+#
+# Elasticsearch splits large requests in batches. This parameter
+# defines
+# maximum size of each batch (for example: es_scroll_size=10000).
+#  (integer value)
+#es_scroll_size = 10000
+
+#
+# Redissentinel provides a timeout option on the connections.
+# This parameter defines that timeout (for example:
+# socket_timeout=0.1).
+#  (floating point value)
+#socket_timeout = 0.1
+
+#
+# Redissentinel uses a service name to identify a master redis
+# service.
+# This parameter defines the name (for example:
+# sentinal_service_name=mymaster).
+#  (string value)
+#sentinel_service_name = mymaster
+
+[database]
+{%- set _data = server.database %}
+{%- if _data.ssl is defined and 'cacert_file' not in _data.get('ssl', {}).keys() %}{% do _data['ssl'].update({'cacert_file': server.cacert_file}) %}{% endif %}
+{%- include "oslo_templates/files/queens/oslo/_database.conf" %}
+
+[oslo_policy]
+{%- if server.policy is defined %}
+{%- set _data = server.policy %}
+{%- include "oslo_templates/files/queens/oslo/_policy.conf" %}
+{%- endif %}
+
+[keystone_authtoken]
+{%- set _data = server.identity %}
+{%- set auth_type = _data.get('auth_type', 'password') %}
+{%- include "oslo_templates/files/queens/keystonemiddleware/_auth_token.conf" %}
+{%- include "oslo_templates/files/queens/keystoneauth/_type_" + auth_type + ".conf" %}
