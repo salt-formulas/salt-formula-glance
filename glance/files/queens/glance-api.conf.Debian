@@ -1787,6 +1787,7 @@ registry_port = {{ server.registry.port }}
 #
 #  (string value)
 #flavor = keystone
+flavor = keystone
 
 #
 # Name of the paste configuration file.
