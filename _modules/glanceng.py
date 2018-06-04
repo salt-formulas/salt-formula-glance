@@ -57,12 +57,6 @@ from salt.version import (
 
 from salt.utils import warn_until
 
-# is there not SaltStackVersion.current() to get
-# the version of the salt running this code??
-_version_ary = __version__.split('.')
-CUR_VER = SaltStackVersion(_version_ary[0], _version_ary[1])
-BORON = SaltStackVersion.from_name('Boron')
-
 # pylint: disable=import-error
 HAS_GLANCE = False
 try:
@@ -312,21 +306,9 @@ def image_list(id=None, profile=None, name=None):  # pylint: disable=C0103
 
         salt '*' glance.image_list
     '''
-    #try:
+
     g_client = _auth(profile)
-    #except kstone_exc.Unauthorized:
-    #    return False
-    #
-    # I may want to use this code on Beryllium
-    # until we got 2016.3.0 packages for Ubuntu
-    # so please keep this code until Carbon!
-    warn_until('Carbon', 'Starting in \'2016.3.0\' image_list() '
-        'will return a list of images instead of a dictionary '
-        'keyed with the images\' names.')
-    if CUR_VER < BORON:
-        ret = {}
-    else:
-        ret = []
+    ret = []
     for image in g_client.images.list():
         if id is None and name is None:
             _add_image(ret, image)
@@ -335,7 +317,7 @@ def image_list(id=None, profile=None, name=None):  # pylint: disable=C0103
                 _add_image(ret, image)
                 return ret
             if name == image.name:
-                if name in ret and CUR_VER < BORON:
+                if name in ret:
                     # Not really worth an exception
                     return {
                         'result': False,
@@ -543,23 +525,12 @@ def image_show(id=None, name=None, profile=None):  # pylint: disable=C0103
     pformat = pprint.PrettyPrinter(indent=4).pformat
     log.debug('Properties of image {0}:\n{1}'.format(
         image.name, pformat(image)))
-    ret_details = {}
-    # I may want to use this code on Beryllium
-    # until we got 2016.3.0 packages for Ubuntu
-    # so please keep this code until Carbon!
-    warn_until('Carbon', 'Starting with \'2016.3.0\' image_show() '
-            'will stop wrapping the returned image in another '
-            'dictionary.')
-    if CUR_VER < BORON:
-        ret[image.name] = ret_details
-    else:
-        ret = ret_details
     schema = image_schema(profile=profile)
     if len(schema.keys()) == 1:
         schema = schema['image']
     for key in schema.keys():
         if key in image:
-            ret_details[key] = image[key]
+            ret[key] = image[key]
     return ret
 
 def image_update(id=None, name=None, profile=None, **kwargs):  # pylint: disable=C0103
@@ -611,14 +582,6 @@ def image_update(id=None, name=None, profile=None, **kwargs):  # pylint: disable
             to_update[key] = value
     g_client = _auth(profile)
     updated = g_client.images.update(image['id'], **to_update)
-    # I may want to use this code on Beryllium
-    # until we got 2016.3.0 packages for Ubuntu
-    # so please keep this code until Carbon!
-    warn_until('Carbon', 'Starting with \'2016.3.0\' image_update() '
-            'will stop wrapping the returned, updated image in '
-            'another dictionary.')
-    if CUR_VER < BORON:
-        updated = {updated.name: updated}
     return updated
 
 def _item_list(profile=None):
