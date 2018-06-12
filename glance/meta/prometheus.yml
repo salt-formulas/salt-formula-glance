@@ -4,7 +4,7 @@
 {% raw %}
 server:
   alert:
-    GlanceAPIOutage:
+    GlanceApiOutage:
       if: >-
         openstack_api_check_status{name="glance"} == 0
       labels:
@@ -14,7 +14,7 @@ server:
         summary: "Glance API outage"
         description: >-
           Glance API is not accessible for the Glance endpoint in the OpenStack service catalog.
-    GlareAPIOutage:
+    GlareApiOutage:
       if: >-
         openstack_api_check_status{name="glare"} == 0
       labels:
@@ -24,7 +24,7 @@ server:
         summary: "Glare API outage"
         description: >-
           Glare API is not accessible for the Glare endpoint in the OpenStack service catalog.
-    GlanceAPIServiceDown:
+    GlanceApiEndpointDown:
       if: >-
         http_response_status{name=~"glance.*"} == 0
       for: 2m
@@ -32,11 +32,11 @@ server:
         severity: minor
         service: glance
       annotations:
-        summary: "Host {{ $labels.name }} endpoint is not accesible"
+        summary: "{{ $labels.name }} endpoint is not accessible"
         description: >-
-          The host {{ $labels.name }} endpoint on the {{ $labels.host }} node is not accessible for at least 2 minutes.
+          The {{ $labels.name }} endpoint on the {{ $labels.host }} node is not accessible for 2 minutes.
 {%- endraw %}
-    GlanceAPIServiceDownMajor:
+    GlanceApiEndpointsDownMajor:
       if: >-
         count(http_response_status{name=~"glance.*"} == 0) by (name) >= count(http_response_status{name=~"glance.*"}) by (name) * {{ major_threshold }}
       for: 2m
@@ -44,10 +44,10 @@ server:
         severity: major
         service: glance
       annotations:
-        summary: "{{major_threshold * 100}}% of host {% raw %}{{ $labels.name }} endpoints are not accesible"
+        summary: "{{major_threshold * 100}}% of {% raw %}{{ $labels.name }} endpoints are not accessible"
         description: >-
-          {{ $value }} host {{ $labels.name }} endpoints are not accessible for at least 2 minutes (at least {% endraw %}{{major_threshold * 100}}{% raw %}%).
-    GlanceAPIServiceOutage:
+          {{ $value }} {{ $labels.name }} endpoints (>= {% endraw %}{{major_threshold * 100}}{% raw %}%) are not accessible for 2 minutes.
+    GlanceApiEndpointsOutage:
       if: >-
         count(http_response_status{name=~"glance.*"} == 0) by (name) == count(http_response_status{name=~"glance.*"}) by (name)
       for: 2m
@@ -55,9 +55,9 @@ server:
         severity: critical
         service: glance
       annotations:
-        summary: "Host {{ $labels.name }} outage"
+        summary: "{{ $labels.name }} endpoints outage"
         description: >-
-          All available host {{ $labels.name }} endpoints are not accessible for at least 2 minutes.
+          All available {{ $labels.name }} endpoints are not accessible for 2 minutes.
 {%- endraw %}
     GlanceErrorLogsTooHigh:
       {%- set log_threshold = monitoring.error_log_rate|float %}
@@ -69,6 +69,7 @@ server:
         service: glance
       annotations:
         summary: "High number of errors in Glance logs"
-        description: "The average per-second rate of errors in Glance logs on the {{ $labels.host }} node is {{ $value }} (as measured over the last 5 minutes)."
+        description: >-
+          The average per-second rate of errors in Glance logs on the {{ $labels.host }} node is {{ $value }} (as measured over the last 5 minutes).
 {%- endraw %}
 {%- endif %}
