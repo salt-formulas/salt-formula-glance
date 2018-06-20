@@ -324,7 +324,7 @@ glance_filesystem_store_metadata_file:
 {%- for name, rule in server.get('policy', {}).items() %}
 
 {%- if rule != None %}
-rule_{{ name }}_present:
+glance_keystone_rule_{{ name }}_present:
   keystone_policy.rule_present:
   - path: /etc/glance/policy.json
   - name: {{ name }}
@@ -334,7 +334,7 @@ rule_{{ name }}_present:
 
 {%- else %}
 
-rule_{{ name }}_absent:
+glance_keystone_rule_{{ name }}_absent:
   keystone_policy.rule_absent:
   - path: /etc/glance/policy.json
   - name: {{ name }}
