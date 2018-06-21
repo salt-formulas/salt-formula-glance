@@ -2264,7 +2264,7 @@ filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file',
 
 [oslo_concurrency]
 {%- if server.concurrency is defined %}
-{%- set _data = server.policy %}
+{%- set _data = server.oslo_policy %}
 {%- include "oslo_templates/files/queens/oslo/_concurrency.conf" %}
 {%- endif %}
 
@@ -2274,7 +2274,7 @@ filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file',
 {%- include "oslo_templates/files/queens/oslo/_database.conf" %}
 
 [oslo_policy]
-{%- if server.policy is defined %}
-{%- set _data = server.policy %}
+{%- if server.oslo_policy is defined %}
+{%- set _data = server.oslo_policy %}
 {%- include "oslo_templates/files/queens/oslo/_policy.conf" %}
 {%- endif %}

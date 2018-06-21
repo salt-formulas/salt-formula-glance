@@ -3775,8 +3775,8 @@ swift_store_config_file = /etc/glance/swift-stores.conf
 {%- include "oslo_templates/files/queens/oslo/_database.conf" %}
 
 [oslo_policy]
-{%- if server.policy is defined %}
-{%- set _data = server.policy %}
+{%- if server.oslo_policy is defined %}
+{%- set _data = server.oslo_policy %}
 {%- include "oslo_templates/files/queens/oslo/_policy.conf" %}
 {%- endif %}
 
