@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+dpkg-maintscript-helper symlink_to_dir \
+        /usr/share/salt-formulas/env/glance/files/pike /usr/share/salt-formulas/env/glance/files/ocata salt-formula-glance -- "$@"
+
+#DEBHELPER#
+
+exit 0

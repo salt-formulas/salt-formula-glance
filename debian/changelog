@@ -1,0 +1,38 @@
+salt-formula-glance (2016.12.1-2xenial1) xenial; urgency=medium
+
+  * Fix files/pike symlink
+
+ -- devops <devops@mirantis.com>  Tue, 06 Feb 2018 15:40:55 +0200
+
+salt-formula-glance (2016.12.1-1xenial1) xenial; urgency=medium
+
+  * Build for Ubuntu xenial
+
+ -- Filip Pytloun <filip@pytloun.cz>  Tue, 24 Jan 2017 12:21:42 +0100
+
+salt-formula-glance (2016.12.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * d/{control,copyright}: Use my @debian.org email address
+  * Bumped debhelper version to 10
+
+ -- Ondřej Nový <onovy@debian.org>  Sun, 25 Dec 2016 17:05:47 +0100
+
+salt-formula-glance (2016.4.1-3) unstable; urgency=medium
+
+  * Added Debian tests
+
+ -- Ondřej Nový <novy@ondrej.org>  Wed, 08 Jun 2016 21:27:16 +0200
+
+salt-formula-glance (2016.4.1-2) unstable; urgency=medium
+
+  * d/copyright: Added myself to Debian part
+  * Added myself as uploader
+
+ -- Ondřej Nový <novy@ondrej.org>  Wed, 11 May 2016 23:44:35 +0200
+
+salt-formula-glance (2016.4.1-1) unstable; urgency=medium
+
+  * Initial release (Closes: #821916)
+
+ -- Filip Pytloun <filip@pytloun.cz>  Wed, 20 Apr 2016 16:04:29 +0200
