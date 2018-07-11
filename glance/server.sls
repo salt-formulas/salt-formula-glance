@@ -248,16 +248,18 @@ glance_entrypoint:
 
 {%- endif %}
 
-/srv/glance:
+glance_srv_dir:
   file.directory:
+  - name: /srv/glance
   - mode: 755
   - user: glance
   - group: glance
   - require:
     - pkg: glance_packages
 
-/var/lib/glance/images:
+glance_images_dir:
   file.directory:
+  - name: /var/lib/glance/images
   - mode: 755
   - user: glance
   - group: glance
