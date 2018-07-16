@@ -145,18 +145,36 @@ glance_fluentd_logger_package:
     - name: python-fluent-logger
 {%- endif %}
 
+glance_general_logging_conf:
+  file.managed:
+    - name: /etc/glance/logging.conf
+    - source: salt://oslo_templates/files/logging/_logging.conf
+    - template: jinja
+    - user: glance
+    - group: glance
+    - defaults:
+        service_name: glance
+        _data: {{ server.logging }}
+    - require:
+      - pkg: glance_packages
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: glance_fluentd_logger_package
+{%- endif %}
+    - watch_in:
+      - service: glance_services
+
 {% for service_name in glance_services_list %}
 {{ service_name }}_logging_conf:
   file.managed:
     - name: /etc/glance/logging/logging-{{ service_name }}.conf
-    - source: salt://glance/files/logging.conf
+    - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
     - makedirs: True
     - user: glance
     - group: glance
     - defaults:
         service_name: {{ service_name }}
-        values: {{ server }}
+        _data: {{ server.logging }}
     - require:
       - pkg: glance_packages
 {%- if glance_glare_available %}
