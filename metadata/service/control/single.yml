@@ -1,6 +1,7 @@
 applications:
 - glance
 classes:
+- service.glance.control.storage.file
 - service.glance.support
 parameters:
   _param:
@@ -51,5 +52,3 @@ parameters:
         user: openstack
         password: ${_param:rabbitmq_openstack_password}
         virtual_host: '/openstack'
-      storage:
-        engine: file

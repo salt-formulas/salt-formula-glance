@@ -1,0 +1,17 @@
+parameters:
+  glance:
+    server:
+      storage:
+        engine: vmware
+        default_store: vsphere
+        vmware:
+          enabled: true
+          server_host: ${_param:openstack_vcenter_host}
+          server_username: ${_param:openstack_vcenter_username}
+          server_password: ${_param:openstack_vcenter_password}
+          insecure: true
+          datastores:
+            storage01:
+              enabled: true
+              name: ${_param:openstack_vcenter_storage_name}
+              path: ${_param:openstack_vcenter_datacenter_name}
