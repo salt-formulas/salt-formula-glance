@@ -109,6 +109,31 @@ Ceph integration glance
           chunk_size: 8
           client_glance_key: AQDOavlU6BsSJhAAnpFR906mvdgdfRqLHwu0Uw==
 
+VMWare integration:
+
+.. code-block:: yaml
+
+    glance:
+      server
+        storage:
+          engine: vmware
+          default_store: vsphere
+          vmware:
+            enabled: true
+            server_host: 1.2.3.4
+            server_username: vmware_username
+            server_password: vmware_password
+            datastores:
+              data1:
+                name: datastore_name1
+                enabled: true
+                path: datacenter_name
+                weight: 10
+              data2:
+                name: datastore_name2
+                enabled: true
+                path: datacenter_name
+
 RabbitMQ HA setup
 
 .. code-block:: yaml

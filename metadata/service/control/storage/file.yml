@@ -1,0 +1,6 @@
+parameters:
+  glance:
+    server:
+      storage:
+        engine: file
+        default_store: file

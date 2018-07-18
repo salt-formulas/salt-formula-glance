@@ -1,3 +1,5 @@
+classes:
+- service.glance.control.storage.file
 parameters:
   _param:
     keystone_glance_endpoint_type: internalURL
@@ -42,7 +44,5 @@ parameters:
                   user: openstack
                   password: ${_param:rabbitmq_openstack_password}
                   virtual_host: '/openstack'
-                storage:
-                  engine: file
                 cache:
                   engine: memcached
