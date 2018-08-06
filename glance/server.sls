@@ -1,9 +1,14 @@
 {%- from "glance/map.jinja" import server with context %}
 {%- if server.enabled %}
 
+include:
+- glance.db.offline_sync
+
 glance_packages:
   pkg.installed:
   - names: {{ server.pkgs }}
+  - require_in:
+    - sls: glance.db.offline_sync
 
 {%- if not salt['user.info']('glance') %}
 glance_user:
@@ -35,6 +40,9 @@ glance_group:
   - template: jinja
   - require:
     - pkg: glance_packages
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-registry.conf:
   file.managed:
@@ -42,6 +50,9 @@ glance_group:
   - template: jinja
   - require:
     - pkg: glance_packages
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-scrubber.conf:
   file.managed:
@@ -49,6 +60,9 @@ glance_group:
   - template: jinja
   - require:
     - pkg: glance_packages
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-api.conf:
   file.managed:
@@ -56,6 +70,9 @@ glance_group:
   - template: jinja
   - require:
     - pkg: glance_packages
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-api-paste.ini:
   file.managed:
@@ -63,6 +80,9 @@ glance_group:
   - template: jinja
   - require:
     - pkg: glance_packages
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 {%- if server.version == 'newton' or server.version == 'ocata' %}
 
@@ -77,6 +97,9 @@ glance_glare_package:
   - require:
     - pkg: glance_packages
     - pkg: glance_glare_package
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-glare.conf:
   file.managed:
@@ -85,6 +108,9 @@ glance_glare_package:
   - require:
     - pkg: glance_packages
     - pkg: glance_glare_package
+  - require_in:
+    - sls: glance.db.offline_sync
+    - cmd: glance_load_metadatafs
 
 {%- if not grains.get('noservices', False) %}
 
@@ -92,8 +118,8 @@ glance_glare_service:
   service.running:
   - enable: true
   - name: glance-glare
-  - require_in:
-    - cmd: glance_install_database
+  - require:
+    - sls: glance.db.offline_sync
     - cmd: glance_load_metadatafs
   - watch:
     - file: /etc/glance/glance-glare.conf
@@ -203,12 +229,24 @@ glance_general_logging_conf:
     - service: glance_services
 {% endif %}
 
+glance_load_metadatafs:
+  cmd.run:
+  - name: glance-manage db_load_metadefs
+  - require:
+    - sls: glance.db.offline_sync
+    {%- if grains.get('noservices', False) %}
+  - onlyif: /bin/false
+    {%- endif %}
+
+
 {%- if not grains.get('noservices', False) %}
 
 glance_services:
   service.running:
   - enable: true
   - names: {{ server.services }}
+  - require:
+    - sls: glance.db.offline_sync
   - watch:
     - file: /etc/glance/glance-api.conf
     - file: /etc/glance/glance-registry.conf
@@ -220,17 +258,6 @@ glance_services:
     - file: mysql_ca_glance_server
     {% endif %}
 
-glance_install_database:
-  cmd.run:
-  - name: glance-manage db_sync
-  - require:
-    - service: glance_services
-
-glance_load_metadatafs:
-  cmd.run:
-  - name: glance-manage db_load_metadefs
-  - require:
-    - cmd: glance_install_database
 
 {%- if server.get('image_cache', {}).get('enabled', False) %}
 glance_cron_glance-cache-pruner:
