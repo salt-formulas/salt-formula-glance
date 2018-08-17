@@ -3,6 +3,7 @@ glance:
     enabled: true
     version: newton
     workers: 1
+    enable_proxy_headers_parsing: true
     database:
       engine: mysql
       host: localhost

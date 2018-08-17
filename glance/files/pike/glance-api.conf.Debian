@@ -4039,7 +4039,7 @@ kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', server.cacer
 
 # Whether the application is behind a proxy or not. This determines if the
 # middleware should parse the headers or not. (boolean value)
-#enable_proxy_headers_parsing = false
+enable_proxy_headers_parsing = {{ server.get('enable_proxy_headers_parsing', true) }}
 
 
 [oslo_policy]
