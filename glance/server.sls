@@ -42,7 +42,6 @@ glance_group:
     - pkg: glance_packages
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-registry.conf:
   file.managed:
@@ -52,7 +51,6 @@ glance_group:
     - pkg: glance_packages
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-scrubber.conf:
   file.managed:
@@ -62,7 +60,6 @@ glance_group:
     - pkg: glance_packages
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-api.conf:
   file.managed:
@@ -72,7 +69,6 @@ glance_group:
     - pkg: glance_packages
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-api-paste.ini:
   file.managed:
@@ -82,7 +78,6 @@ glance_group:
     - pkg: glance_packages
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 {%- if server.version == 'newton' or server.version == 'ocata' %}
 
@@ -99,7 +94,6 @@ glance_glare_package:
     - pkg: glance_glare_package
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 /etc/glance/glance-glare.conf:
   file.managed:
@@ -110,7 +104,6 @@ glance_glare_package:
     - pkg: glance_glare_package
   - require_in:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
 
 {%- if not grains.get('noservices', False) %}
 
@@ -120,7 +113,6 @@ glance_glare_service:
   - name: glance-glare
   - require:
     - sls: glance.db.offline_sync
-    - cmd: glance_load_metadatafs
   - watch:
     - file: /etc/glance/glance-glare.conf
     {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
@@ -228,16 +220,6 @@ glance_general_logging_conf:
   - watch_in:
     - service: glance_services
 {% endif %}
-
-glance_load_metadatafs:
-  cmd.run:
-  - name: glance-manage db_load_metadefs
-  - require:
-    - sls: glance.db.offline_sync
-    {%- if grains.get('noservices', False) %}
-  - onlyif: /bin/false
-    {%- endif %}
-
 
 {%- if not grains.get('noservices', False) %}
 

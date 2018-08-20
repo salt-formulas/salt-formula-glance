@@ -20,10 +20,6 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=cluster
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-ceph
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single-barbican
-    - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=single
     - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=cluster
     - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-ceph
     - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=single-barbican
