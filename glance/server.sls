@@ -38,6 +38,8 @@ glance_group:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-cache.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
   - require_in:
@@ -48,6 +50,8 @@ glance_group:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-registry.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
   - require_in:
@@ -58,6 +62,8 @@ glance_group:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-scrubber.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
   - require_in:
@@ -68,6 +74,8 @@ glance_group:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-api.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
   - require_in:
@@ -78,6 +86,8 @@ glance_group:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-api-paste.ini
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
   - require_in:
@@ -94,6 +104,8 @@ glance_glare_package:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-glare-paste.ini
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
     - pkg: glance_glare_package
@@ -105,6 +117,8 @@ glance_glare_package:
   file.managed:
   - source: salt://glance/files/{{ server.version }}/glance-glare.conf.{{ grains.os_family }}
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
     - pkg: glance_glare_package
@@ -176,7 +190,8 @@ glance_general_logging_conf:
     - name: /etc/glance/logging.conf
     - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
-    - user: glance
+    - mode: 0640
+    - user: root
     - group: glance
     - defaults:
         service_name: glance
@@ -196,7 +211,8 @@ glance_general_logging_conf:
     - source: salt://oslo_templates/files/logging/_logging.conf
     - template: jinja
     - makedirs: True
-    - user: glance
+    - mode: 0640
+    - user: root
     - group: glance
     - defaults:
         service_name: {{ service_name }}
@@ -223,6 +239,8 @@ glance_general_logging_conf:
   file.managed:
   - source: salt://glance/files/_backends/_swift.conf
   - template: jinja
+  - mode: 0640
+  - group: glance
   - require:
     - pkg: glance_packages
   - watch_in:
@@ -357,8 +375,8 @@ glance_install_image_{{ image_name }}:
 glance_filesystem_store_metadata_file:
   file.managed:
   - name: {{ server.get('filesystem_store_metadata_file', '/etc/glance/filesystem_store_metadata.json') }}
-  - mode: 644
-  - user: glance
+  - mode: 0640
+  - user: root
   - group: glance
   - source: salt://glance/files/filesystem_store_metadata.json_template
   - template: jinja
@@ -419,5 +437,15 @@ mysql_ca_glance_server:
    - name: {{ server.database.ssl.get('cacert_file', server.cacert_file) }}
 {%- endif %}
 {%- endif %}
+
+correct_permissions_files:
+  cmd.run:
+    - name: find /etc/glance/ -type f \( \! -perm 640 -o \! -user root -o \! -group glance \) -execdir chmod 640 {} + -execdir chown root:glance {} +
+    - onlyif: find /etc/glance/ -type f \( \! -perm 640 -o \! -user root -o \! -group glance \) -printf found | grep -q found
+
+correct_permissions_dirs:
+  cmd.run:
+    - name: find /etc/glance/ -type d \( \! -perm 750 -o \! -user root -o \! -group glance \) -execdir chmod 750 {} + -execdir chown root:glance {} +
+    - onlyif: find /etc/glance/ -type d \( \! -perm 750 -o \! -user root -o \! -group glance \) -printf found | grep -q found
 
 {%- endif %}
