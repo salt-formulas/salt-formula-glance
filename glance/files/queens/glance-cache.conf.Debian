@@ -669,12 +669,10 @@
 #  (integer value)
 # Minimum value: 0
 #image_cache_max_size = 10737418240
-{% if server.get('image_cache', {}).get('enabled', False) %}
 
-image_cache_max_size = {{ server.image_cache.get('max_size', '10737418240') }}
-image_cache_stall_time = {{ server.image_cache.get('stall_time', '86400') }}
-image_cache_dir = {{ server.image_cache.get('directory', '/var/lib/glance/image-cache/') }}
-{% endif %}
+image_cache_max_size = {{ server.image_cache.max_size }}
+image_cache_stall_time = {{ server.image_cache.stall_time }}
+image_cache_dir = {{ server.image_cache.directory }}
 
 {% if server.identity.region is defined %}
 os_region_name = {{ server.identity.region }}

@@ -32,6 +32,21 @@
             }
           },
         },
+        'image_cache': {
+          'max_size': '10737418240',
+          'stall_time': '86400',
+          'directory': '/var/lib/glance/image-cache/',
+        },
+        'cron': {
+          'cache_pruner': {
+            'special_period': '@daily'
+          },
+          'cache_cleaner': {
+            'hour': '5',
+            'minute': '30',
+            'daymonth': '*/2',
+          },
+        },
     },
     'RedHat': {
         'pkgs': ['openstack-glance', 'python-glanceclient','python-pycadf'],
@@ -56,6 +71,21 @@
             'watchedfile': {
               'enabled': true
             }
+          },
+        },
+        'image_cache': {
+          'max_size': '10737418240',
+          'stall_time': '86400',
+          'directory': '/var/lib/glance/image-cache/',
+        },
+        'cron': {
+          'cache_pruner': {
+            'special_period': '@daily'
+          },
+          'cache_cleaner': {
+            'hour': '5',
+            'minute': '30',
+            'daymonth': '*/2',
           },
         },
     },

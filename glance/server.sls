@@ -258,13 +258,11 @@ glance_services:
     - file: mysql_ca_glance_server
     {% endif %}
 
-
-{%- if server.get('image_cache', {}).get('enabled', False) %}
 glance_cron_glance-cache-pruner:
   cron.present:
   - name: glance-cache-pruner
   - user: glance
-  - special: '@daily'
+  - special: '{{ server.cron.cache_pruner.special_period }}'
   - require:
     - service: glance_services
 
@@ -272,13 +270,11 @@ glance_cron_glance-cache-cleaner:
   cron.present:
   - name: glance-cache-cleaner
   - user: glance
-  - minute: 30
-  - hour: 5
-  - daymonth: '*/2'
+  - minute: '{{ server.cron.cache_cleaner.minute }}'
+  - hour: '{{ server.cron.cache_cleaner.hour }}'
+  - daymonth: '{{ server.cron.cache_cleaner.daymonth }}'
   - require:
     - service: glance_services
-
-{%- endif %}
 
 {%- endif %}
 
