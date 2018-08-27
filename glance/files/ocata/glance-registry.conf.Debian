@@ -391,6 +391,7 @@ api_limit_max = 1000
 #
 #  (boolean value)
 #enable_v1_api = true
+enable_v1_api={{ server.get('enable_v1_api', 'False')|lower }}
 
 #
 # Deploy the v2 OpenStack Images API.
@@ -444,6 +445,7 @@ api_limit_max = 1000
 #
 #  (boolean value)
 #enable_v1_registry = true
+enable_v1_registry={{ server.get('enable_v1_api', 'False')|lower }}
 
 #
 # Deploy the v2 API Registry service.

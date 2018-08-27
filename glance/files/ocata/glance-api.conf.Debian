@@ -440,7 +440,7 @@ user_storage_quota = {{ server.quota.user_storage|default('0') }}
 #
 #  (boolean value)
 #enable_v1_api = true
-enable_v1_api=False
+enable_v1_api={{ server.get('enable_v1_api', 'False')|lower }}
 
 #
 # Deploy the v2 OpenStack Images API.
