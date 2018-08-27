@@ -1,7 +1,5 @@
-orchestrate:
-  server:
-    priority: 530
-    batch: 1
-    require:
-    - salt: keystone.server
-
+orchestration:
+  upgrade:
+    applications:
+      glance:
+         priority: 1050

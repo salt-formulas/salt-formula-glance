@@ -61,14 +61,20 @@
     },
 }, merge=pillar.glance.get('server', {}), base='BaseDefaults') %}
 
+{%- set client_default_params = {
+      'enabled': false
+    }
+%}
+
 {% set client = salt['grains.filter_by']({
+    'BaseDefaults': client_default_params,
     'Debian': {
         'pkgs': ['python-glanceclient', 'python-keystoneclient']
     },
     'RedHat': {
         'pkgs': ['python-glanceclient', 'python-keystoneclient']
     },
-}, merge=pillar.glance.get('client', {})) %}
+}, merge=pillar.glance.get('client', {}), base='BaseDefaults') %}
 
 {% set monitoring = salt['grains.filter_by']({
     'default': {
@@ -76,3 +82,5 @@
         'endpoint_failed_major_threshold': 0.5,
     },
 }, grain='os_family', merge=salt['pillar.get']('glance:monitoring')) %}
+
+{% set upgrade = pillar.get('glance', {}).get('upgrade', {}) %}
