@@ -2027,7 +2027,7 @@ max_overflow = 30
 default_store = file
 stores = file,http
 {%- else %}
-default_store = {{ storage_engines[0]  }}
+default_store = {{ server.storage.get('default_store', storage_engines[0]) }}
 stores = {{ server.storage.engine }}
 {%- endif %}
 #
