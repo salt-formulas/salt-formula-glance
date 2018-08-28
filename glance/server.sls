@@ -420,14 +420,4 @@ mysql_ca_glance_server:
 {%- endif %}
 {%- endif %}
 
-correct_permissions_files:
-  cmd.run:
-    - name: find /etc/glance/ -type f \( \! -perm 640 -o \! -user root -o \! -group glance \) -execdir chmod 640 {} + -execdir chown root:glance {} +
-    - onlyif: find /etc/glance/ -type f \( \! -perm 640 -o \! -user root -o \! -group glance \) -printf found | grep -q found
-
-correct_permissions_dirs:
-  cmd.run:
-    - name: find /etc/glance/ -type d \( \! -perm 750 -o \! -user root -o \! -group glance \) -execdir chmod 750 {} + -execdir chown root:glance {} +
-    - onlyif: find /etc/glance/ -type d \( \! -perm 750 -o \! -user root -o \! -group glance \) -printf found | grep -q found
-
 {%- endif %}
