@@ -341,6 +341,34 @@ Barbican integration glance
           barbican:
             enabled: true
 
+Adding cron-job
+---------------
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        cron:
+          cache_pruner:
+            special_period: '@daily'
+          cache_cleaner:
+            hour: '5'
+            minute: '30'
+            daymonth: '*/2'
+
+
+Image cache settings
+--------------------
+
+.. code-block:: yaml
+
+    glance:
+      server:
+        image_cache:
+          max_size: 10737418240
+          stall_time: 86400
+          directory: '/var/lib/glance/image-cache/'
+
 
 Client role
 -----------
