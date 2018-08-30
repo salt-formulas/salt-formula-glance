@@ -190,6 +190,8 @@ glance_general_logging_conf:
         _data: {{ server.logging }}
     - require:
       - pkg: glance_packages
+    - require_in:
+      - sls: glance.db.offline_sync
 {%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
       - pkg: glance_fluentd_logger_package
 {%- endif %}
