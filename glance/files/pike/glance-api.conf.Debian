@@ -1,5 +1,13 @@
 {%- from "glance/map.jinja" import server with context %}
 {% set storage_engines = server.storage.engine.split(',') %}
+
+{%- set connection_x509_ssl_option = '' %}
+{%- if server.database.get('x509',{}).get('enabled',False) %}
+  {%- set connection_x509_ssl_option = '&ssl_ca=' ~ server.database.x509.ca_file ~ '&ssl_cert=' ~ server.database.x509.cert_file ~ '&ssl_key=' ~ server.database.x509.key_file %}
+{%- elif server.database.get('ssl',{}).get('enabled',False) %}
+  {%- set connection_x509_ssl_option = '&ssl_ca=' ~ server.database.ssl.get('cacert_file', server.cacert_file) %}
+{%- endif %}
+
 [DEFAULT]
 
 #
@@ -1903,7 +1911,7 @@ backend = sqlalchemy
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
 #connection = <None>
-connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.get('ssl',{}).get('enabled',False) %}?ssl_ca={{ server.database.ssl.get('cacert_file', server.cacert_file) }}{% endif %}
+connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8{{ connection_x509_ssl_option|string }}
 
 # The SQLAlchemy connection string to use to connect to the slave database.
 # (string value)
