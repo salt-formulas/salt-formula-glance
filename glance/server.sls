@@ -1,8 +1,14 @@
 {%- from "glance/map.jinja" import server with context %}
+
 {%- if server.enabled %}
 
+{%- set mysql_x509_ssl_enabled = server.database.get('x509',{}).get('enabled',False) or server.database.get('ssl',{}).get('enabled',False) %}
+
 include:
-- glance.db.offline_sync
+  - glance.db.offline_sync
+  {%- if mysql_x509_ssl_enabled %}
+  - glance._ssl.mysql
+  {%- endif %}
 
 glance_packages:
   pkg.installed:
@@ -127,13 +133,13 @@ glance_glare_service:
   - name: glance-glare
   - require:
     - sls: glance.db.offline_sync
+    {%- if mysql_x509_ssl_enabled %}
+    - sls: glance._ssl.mysql
+    {%- endif %}
   - watch:
     - file: /etc/glance/glance-glare.conf
     {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
     - file: rabbitmq_ca_glance_server
-    {% endif %}
-    {%- if server.database.get('ssl',{}).get('enabled',False)  %}
-    - file: mysql_ca_glance_server
     {% endif %}
 
 {%- endif %}
@@ -249,15 +255,15 @@ glance_services:
   - names: {{ server.services }}
   - require:
     - sls: glance.db.offline_sync
+    {%- if mysql_x509_ssl_enabled %}
+    - sls: glance._ssl.mysql
+    {%- endif %}
   - watch:
     - file: /etc/glance/glance-api.conf
     - file: /etc/glance/glance-registry.conf
     - file: /etc/glance/glance-api-paste.ini
     {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
     - file: rabbitmq_ca_glance_server
-    {% endif %}
-    {%- if server.database.get('ssl',{}).get('enabled',False)  %}
-    - file: mysql_ca_glance_server
     {% endif %}
 
 glance_cron_glance-cache-pruner:
@@ -403,19 +409,5 @@ rabbitmq_ca_glance_server:
    - name: {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
 {% endif %}
 {% endif %}
-
-{%- if server.database.get('ssl',{}).get('enabled',False)  %}
-mysql_ca_glance_server:
-{%- if server.database.ssl.cacert is defined %}
-  file.managed:
-    - name: {{ server.database.ssl.cacert_file }}
-    - contents_pillar: glance:server:database:ssl:cacert
-    - mode: 0444
-    - makedirs: true
-{%- else %}
-  file.exists:
-   - name: {{ server.database.ssl.get('cacert_file', server.cacert_file) }}
-{%- endif %}
-{%- endif %}
 
 {%- endif %}
