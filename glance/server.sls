@@ -2,13 +2,9 @@
 
 {%- if server.enabled %}
 
-{%- set mysql_x509_ssl_enabled = server.database.get('x509',{}).get('enabled',False) or server.database.get('ssl',{}).get('enabled',False) %}
-
 include:
   - glance.db.offline_sync
-  {%- if mysql_x509_ssl_enabled %}
   - glance._ssl.mysql
-  {%- endif %}
 
 glance_packages:
   pkg.installed:
@@ -59,6 +55,7 @@ glance_group:
   - group: glance
   - require:
     - pkg: glance_packages
+    - sls: glance._ssl.mysql
   - require_in:
     - sls: glance.db.offline_sync
 
@@ -70,6 +67,7 @@ glance_group:
   - group: glance
   - require:
     - pkg: glance_packages
+    - sls: glance._ssl.mysql
   - require_in:
     - sls: glance.db.offline_sync
 
@@ -81,6 +79,7 @@ glance_group:
   - group: glance
   - require:
     - pkg: glance_packages
+    - sls: glance._ssl.mysql
   - require_in:
     - sls: glance.db.offline_sync
 
@@ -92,6 +91,7 @@ glance_group:
   - group: glance
   - require:
     - pkg: glance_packages
+    - sls: glance._ssl.mysql
   - require_in:
     - sls: glance.db.offline_sync
 
@@ -110,6 +110,7 @@ glance_glare_package:
   - require:
     - pkg: glance_packages
     - pkg: glance_glare_package
+    - sls: glance._ssl.mysql
   - require_in:
     - sls: glance.db.offline_sync
 
@@ -122,6 +123,7 @@ glance_glare_package:
   - require:
     - pkg: glance_packages
     - pkg: glance_glare_package
+    - sls: glance._ssl.mysql
   - require_in:
     - sls: glance.db.offline_sync
 
@@ -133,9 +135,7 @@ glance_glare_service:
   - name: glance-glare
   - require:
     - sls: glance.db.offline_sync
-    {%- if mysql_x509_ssl_enabled %}
     - sls: glance._ssl.mysql
-    {%- endif %}
   - watch:
     - file: /etc/glance/glance-glare.conf
     {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
@@ -255,9 +255,7 @@ glance_services:
   - names: {{ server.services }}
   - require:
     - sls: glance.db.offline_sync
-    {%- if mysql_x509_ssl_enabled %}
     - sls: glance._ssl.mysql
-    {%- endif %}
   - watch:
     - file: /etc/glance/glance-api.conf
     - file: /etc/glance/glance-registry.conf

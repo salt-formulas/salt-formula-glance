@@ -1,5 +1,9 @@
 {%- from "glance/map.jinja" import server with context %}
 
+glance_ssl_mysql:
+  test.show_notification:
+    - text: "Running glance._ssl.mysql"
+
 {%- if server.database.get('x509',{}).get('enabled',False) %}
 
   {%- set ca_file=server.database.x509.ca_file %}
@@ -12,6 +16,8 @@ mysql_glance_ssl_x509_ca:
     - name: {{ ca_file }}
     - contents_pillar: glance:server:database:x509:cacert
     - mode: 444
+    - user: glance
+    - group: glance
     - makedirs: true
   {%- else %}
   file.exists:
@@ -24,6 +30,8 @@ mysql_glance_client_ssl_cert:
     - name: {{ cert_file }}
     - contents_pillar: glance:server:database:x509:cert
     - mode: 440
+    - user: glance
+    - group: glance
     - makedirs: true
   {%- else %}
   file.exists:
@@ -36,11 +44,22 @@ mysql_glance_client_ssl_private_key:
     - name: {{ key_file }}
     - contents_pillar: glance:server:database:x509:key
     - mode: 400
+    - user: glance
+    - group: glance
     - makedirs: true
   {%- else %}
   file.exists:
     - name: {{ key_file }}
   {%- endif %}
+
+mysql_glance_ssl_x509_set_user_and_group:
+  file.managed:
+    - names:
+      - {{ ca_file }}
+      - {{ cert_file }}
+      - {{ key_file }}
+    - user: glance
+    - group: glance
 
 {% elif server.database.get('ssl',{}).get('enabled',False) %}
 mysql_ca_glance:
