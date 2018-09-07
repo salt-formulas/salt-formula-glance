@@ -11,6 +11,7 @@ glance_packages:
   - names: {{ server.pkgs }}
   - require_in:
     - sls: glance.db.offline_sync
+    - sls: glance._ssl.mysql
 
 {%- if not salt['user.info']('glance') %}
 glance_user:

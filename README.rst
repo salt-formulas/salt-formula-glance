@@ -423,6 +423,29 @@ Also, it is possible to configure this with pillar:
           ossyslog:
             enabled: true
 
+Enable x509 and ssl communication between Glance and Galera cluster.
+---------------------
+By default communication between Glance and Galera is unsecure.
+
+glance:
+  server:
+    database:
+      x509:
+        enabled: True
+
+You able to set custom certificates in pillar:
+
+glance:
+  server:
+    database:
+      x509:
+        cacert: (certificate content)
+        cert: (certificate content)
+        key: (certificate content)
+
+You can read more about it here:
+    https://docs.openstack.org/security-guide/databases/database-access-control.html
+
 Usage
 =====
 
