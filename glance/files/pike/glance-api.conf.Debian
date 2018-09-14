@@ -3690,6 +3690,13 @@ kombu_ssl_version = TLSv1_2
 {%- endif %}
 
 kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
+{%- if server.message_queue.get('x509',{}).get('enabled', False) %}
+
+kombu_ssl_keyfile = {{ server.message_queue.x509.key_file}}
+
+kombu_ssl_certfile = {{ server.message_queue.x509.cert_file}}
+{%- endif %}
+
 {%- endif %}
 
 # Use durable queues in AMQP. (boolean value)
