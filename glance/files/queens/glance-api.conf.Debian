@@ -3615,3 +3615,9 @@ swift_store_config_file = /etc/glance/swift-stores.conf
 [oslo_middleware]
 {%- set _data = server %}
 {%- include "oslo_templates/files/queens/oslo/_middleware.conf" %}
+
+{%- if server.get('barbican', {}).get('enabled', False) %}
+{%- set _data = server.identity %}
+[barbican]
+{%- include "oslo_templates/files/queens/castellan/_barbican.conf" %}
+{%- endif %}
