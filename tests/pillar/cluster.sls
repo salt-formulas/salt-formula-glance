@@ -58,3 +58,16 @@ glance:
       image_tag: 256
       image_location: 15
       user_storage: 0
+    cache:
+      engine: memcached
+      members:
+      - host: 127.0.0.1
+        port: 11211
+      - host: 127.0.1.1
+        port: 11211
+      - host: 127.0.2.1
+        port: 11211
+      security:
+        enabled: true
+        strategy: ENCRYPT
+        secret_key: secret
