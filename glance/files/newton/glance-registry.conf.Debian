@@ -1185,7 +1185,7 @@ password = {{ server.identity.password }}
 auth_uri=http://{{ server.identity.host }}:5000
 auth_url=http://{{ server.identity.host }}:35357
 
-{%- if server.cache is defined %}
+{%- if server.get('cache',{}).members is defined %}
 memcached_servers={%- for member in server.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
 {%- endif %}
 # Complete "public" Identity API endpoint. This endpoint should not be an

@@ -3274,7 +3274,9 @@ cafile={{ server.identity.get('cacert_file', server.cacert_file) }}
 token_cache_time = -1
 
 {%- if server.cache is defined %}
+{%- if server.cache.members is defined %}
 memcached_servers={%- for member in server.cache.members %}{{ member.host }}:11211{% if not loop.last %},{% endif %}{%- endfor %}
+{%- endif %}
   {%- if server.cache.get('security', {}).get('enabled', False) %}
 memcache_security_strategy = {{ server.cache.security.get('strategy', 'ENCRYPT') }}
     {%- if server.cache.security.secret_key is not defined or not server.cache.security.secret_key %}
