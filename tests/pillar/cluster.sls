@@ -3,6 +3,7 @@ glance:
     enabled: true
     version: liberty
     workers: 8
+    filesystem_store_datadir: /gps/glance/images
     database:
       engine: mysql
       host: 127.0.0.1

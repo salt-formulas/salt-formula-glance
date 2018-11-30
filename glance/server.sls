@@ -317,7 +317,8 @@ glance_srv_dir:
 
 glance_images_dir:
   file.directory:
-  - name: /var/lib/glance/images
+  - name: {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
+  - makedirs: true
   - mode: 755
   - user: glance
   - group: glance
@@ -335,13 +336,12 @@ glance_download_{{ image.name }}:
     - file: /srv/glance
 
 glance_install_{{ image.name }}:
-  cmd.wait:
-  - name: source /root/keystonerc; glance image-create --name '{{ image.name }}' {% if image.visibility is defined %}--visibility {{ image.visibility }}{% else %}--is-public {{ image.public }}{% endif %} --container-format bare --disk-format {{ image.format }} < {{ image.file }}
+  cmd.run:
+  - name: . /root/keystonercv3; openstack image list | grep {{ image.name }} || openstack image create --disk-format {{ image.format }} {%- if image.public == true %} --public {% else %} --private {% endif %}--container-format bare --file {{ image.file }} {{ image.name }}
   - cwd: /srv/glance
   - require:
     - service: glance_services
-  - watch:
-    - cmd: glance_download_{{ image.name }}
+    - glance_download_{{ image.name }}
 
 {%- endfor %}
 

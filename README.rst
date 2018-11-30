@@ -18,6 +18,7 @@ Sample pillars
         workers: 8
         glance_uid: 302
         glance_gid: 302
+        filesystem_store_datadir: /gpfs/glance/images
         policy:
           publicize_image:
             - "role:admin"
