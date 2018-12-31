@@ -817,7 +817,7 @@ max_overflow = 30
 # List of stores enabled. Valid stores are: cinder, file, http, rbd,
 # sheepdog, swift, s3, vsphere (list value)
 #stores = file,http
-{%- if 'file' in storage_engines %}
+{%- if ['file'] == storage_engines %}
 default_store = file
 stores = file,http
 {%- else %}

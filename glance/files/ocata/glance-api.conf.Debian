@@ -2023,7 +2023,7 @@ max_overflow = 30
 #
 #  (list value)
 #stores = file,http
-{%- if 'file' in storage_engines %}
+{%- if ['file'] == storage_engines %}
 default_store = file
 stores = file,http
 {%- else %}
