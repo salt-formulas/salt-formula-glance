@@ -337,7 +337,7 @@ glance_download_{{ image.name }}:
 
 glance_install_{{ image.name }}:
   cmd.run:
-  - name: . /root/keystonercv3; openstack image list | grep {{ image.name }} || openstack image create --disk-format {{ image.format }} {%- if image.public == true %} --public {% else %} --private {% endif %}--container-format bare --file {{ image.file }} {{ image.name }}
+  - name: . /root/keystonercv3; openstack image list | grep {{ image.name }} || openstack image create --disk-format {{ image.format }} {%- if image.public == true %} --public {% else %} --private {% endif %}--container-format bare {%- if image.tag is defined %} --tag {{ image.tag }} {% endif %}--file {{ image.file }} {{ image.name }}
   - cwd: /srv/glance
   - require:
     - service: glance_services
