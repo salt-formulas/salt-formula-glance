@@ -18,7 +18,7 @@ glance_packages:
 {%- if not salt['user.info']('glance') %}
 glance_user:
   user.present:
-    - name: glance
+    - name: {{ server.get('glance_username') }}
     - home: /var/lib/glance
     {# note: glance uid/gid values would not be evaluated after user is created. #}
     - uid: {{ server.get('glance_uid') }}
@@ -30,7 +30,7 @@ glance_user:
 
 glance_group:
   group.present:
-    - name: glance
+    - name: {{ server.get('glance_groupname') }}
     {# note: glance uid/gid values would not be evaluated after user is created. #}
     - gid: {{ server.get('glance_gid') }}
     - system: True
